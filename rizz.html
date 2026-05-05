@@ -1,0 +1,3917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chem-Rizz — Class 11 Chemistry</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --card: #151f30;
+    --card2: #1e2d45;
+    --border: rgba(99,179,237,0.15);
+    --border2: rgba(99,179,237,0.25);
+    --text: #e2e8f0;
+    --muted: #8ba3bc;
+    --accent: #63b3ed;
+    --accent2: #4fd1c5;
+    --accent3: #f6ad55;
+    --accent4: #fc8181;
+    --green: #68d391;
+    --purple: #b794f4;
+    --glow: rgba(99,179,237,0.2);
+    --glow2: rgba(79,209,197,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top:0; z-index:100;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-size: 1.3rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-right: 2rem; white-space: nowrap;
+  }
+
+  .nav-tabs { display:flex; gap:0.25rem; flex:1; overflow-x:auto; }
+
+  .nav-tab {
+    padding: 0.5rem 1.1rem;
+    border:none; background:transparent;
+    color: var(--muted); cursor:pointer;
+    border-radius: 8px; font-size:0.88rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--bg3); }
+  .nav-tab.active { color: var(--accent); background: rgba(99,179,237,0.1); }
+
+  /* SECTIONS */
+  .section { display:none; padding: 2rem; max-width: 1400px; margin:0 auto; }
+  .section.active { display:block; }
+
+  .section-title {
+    font-size: 1.6rem; font-weight: 700;
+    margin-bottom: 0.4rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .section-sub { color: var(--muted); font-size:0.9rem; margin-bottom: 1.5rem; }
+
+  /* PERIODIC TABLE */
+  .periodic-grid {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    gap: 3px;
+    margin-bottom: 1.5rem;
+  }
+
+  .element-cell {
+    aspect-ratio: 1;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    display: flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    transition: all 0.2s; position:relative;
+    font-size: 0.65rem; gap: 1px;
+    min-width: 0; overflow:hidden;
+  }
+
+  .element-cell:hover { border-color: var(--accent); transform: scale(1.08); z-index:5; box-shadow: 0 0 12px var(--glow); }
+  .element-cell.selected { border-color: var(--accent); background: rgba(99,179,237,0.15); box-shadow: 0 0 12px var(--glow); }
+
+  .el-num { font-size: 0.5rem; color: var(--muted); line-height:1; }
+  .el-sym { font-size: 1rem; font-weight: 700; line-height:1; }
+  .el-name { font-size: 0.42rem; color: var(--muted); line-height:1; text-align:center; }
+
+  .el-cat-nonmetal { --el-color: #4fd1c5; }
+  .el-cat-noble { --el-color: #b794f4; }
+  .el-cat-alkali { --el-color: #fc8181; }
+  .el-cat-alkaline { --el-color: #f6ad55; }
+  .el-cat-transition { --el-color: #63b3ed; }
+  .el-cat-post { --el-color: #68d391; }
+  .el-cat-metalloid { --el-color: #fbd38d; }
+  .el-cat-halogen { --el-color: #76e4f7; }
+  .el-cat-lanthanide { --el-color: #ed64a6; }
+  .el-cat-actinide { --el-color: #f687b3; }
+
+  .element-cell { border-color: rgba(var(--el-color, 99,179,237), 0.2); }
+  .element-cell .el-sym { color: var(--el-color, var(--accent)); }
+  .element-cell:hover { border-color: var(--el-color, var(--accent)); box-shadow: 0 0 12px rgba(var(--el-color, 99,179,237), 0.3); }
+  .element-cell.selected { border-color: var(--el-color, var(--accent)); background: rgba(var(--el-color, 99,179,237), 0.12); }
+
+  .element-cell.placeholder { opacity:0; pointer-events:none; }
+
+  /* DETAIL PANEL */
+  .detail-panel {
+    display:flex; gap:1.5rem; flex-wrap:wrap;
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 1.5rem;
+    margin-bottom: 1.5rem; min-height: 220px;
+  }
+
+  .atom-canvas-wrap {
+    flex: 0 0 220px; display:flex; align-items:center; justify-content:center;
+  }
+  #atomCanvas { border-radius:50%; }
+
+  .element-info { flex:1; min-width:200px; }
+  .element-info h2 { font-size:2rem; font-weight:700; color: var(--accent); margin-bottom:0.3rem; }
+  .element-info .el-full-name { font-size:1.1rem; color:var(--muted); margin-bottom:0.8rem; }
+  .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+  .info-item { background: var(--bg3); border-radius:8px; padding:0.5rem 0.8rem; }
+  .info-label { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .info-value { font-size:1rem; font-weight:600; color:var(--text); font-family:'JetBrains Mono',monospace; }
+
+  .config-section { margin-top: 0.8rem; }
+  .config-label { font-size:0.75rem; color:var(--muted); margin-bottom:0.3rem; }
+  .config-shells { font-family:'JetBrains Mono',monospace; font-size:1rem; color:var(--accent3); }
+  .config-subshells { font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--accent2); margin-top:0.2rem; word-break:break-all; }
+
+  /* CONTROLS */
+  .controls-bar {
+    display:flex; gap:0.75rem; flex-wrap:wrap;
+    margin-bottom: 1.5rem; align-items:center;
+  }
+
+  .btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 8px; border:none; cursor:pointer;
+    font-family:'Space Grotesk',sans-serif; font-size:0.88rem; font-weight:600;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color:#0a0e1a; }
+  .btn-primary:hover { transform:translateY(-1px); box-shadow: 0 4px 12px var(--glow); }
+  .btn-secondary { background: var(--card2); color:var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-danger { background: rgba(252,129,129,0.15); color:var(--accent4); border:1px solid rgba(252,129,129,0.3); }
+  .btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+  .selected-bar { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
+  .sel-chip {
+    background: rgba(99,179,237,0.1); border: 1px solid var(--border2);
+    border-radius:20px; padding:0.25rem 0.75rem;
+    font-size:0.82rem; color:var(--accent);
+  }
+
+  /* COMPOUND RESULT */
+  .compound-result {
+    background: var(--card); border: 1px solid var(--border2);
+    border-radius: 16px; padding:1.5rem; margin-bottom:1.5rem;
+    display:none;
+  }
+  .compound-result.show { display:block; }
+  .compound-formula { font-size:2.5rem; font-weight:700; font-family:'JetBrains Mono',monospace; color:var(--accent3); }
+  .compound-name { font-size:1rem; color:var(--muted); margin-top:0.2rem; }
+  .bond-type-badge {
+    display:inline-block; padding:0.2rem 0.6rem; border-radius:20px;
+    font-size:0.75rem; font-weight:600; margin-top:0.4rem;
+  }
+  .ionic-badge { background: rgba(248,180,0,0.15); color:var(--accent3); border:1px solid rgba(248,180,0,0.3); }
+  .covalent-badge { background: rgba(79,209,197,0.1); color:var(--accent2); border:1px solid rgba(79,209,197,0.3); }
+  .impossible-badge { background: rgba(252,129,129,0.1); color:var(--accent4); border:1px solid rgba(252,129,129,0.3); }
+
+  #bondCanvas { margin-top:1rem; border-radius:12px; background: var(--bg3); }
+
+  /* POLYATOMIC */
+  .poly-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:0.75rem; margin-bottom:1.5rem; }
+  .poly-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding:0.75rem 1rem; cursor:pointer;
+    transition:all 0.2s;
+  }
+  .poly-card:hover { border-color: var(--purple); box-shadow: 0 0 10px rgba(183,148,244,0.2); }
+  .poly-card.selected { border-color: var(--purple); background: rgba(183,148,244,0.1); }
+  .poly-sym { font-size:1.1rem; font-weight:700; color:var(--purple); font-family:'JetBrains Mono',monospace; }
+  .poly-name { font-size:0.75rem; color:var(--muted); margin-top:0.2rem; }
+  .poly-charge { font-size:0.7rem; color:var(--accent3); }
+
+  /* ORGANIC */
+  .organic-controls { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-bottom:1.5rem; }
+  .type-tabs { display:flex; gap:0.35rem; }
+  .type-tab {
+    padding:0.45rem 1rem; border-radius:8px;
+    border: 1px solid var(--border); background:transparent;
+    color:var(--muted); cursor:pointer; font-size:0.85rem;
+    font-family:'Space Grotesk',sans-serif; transition:all 0.2s;
+  }
+  .type-tab.active { border-color:var(--green); color:var(--green); background: rgba(104,211,145,0.1); }
+
+  .carbon-slider-wrap { display:flex; align-items:center; gap:0.75rem; }
+  .carbon-slider-wrap label { font-size:0.85rem; color:var(--muted); }
+  input[type=range] {
+    accent-color: var(--accent2); width:140px; cursor:pointer;
+  }
+  .carbon-count { font-size:1rem; font-weight:700; color:var(--accent2); min-width:20px; }
+
+  .organic-result {
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:16px; padding:1.5rem;
+  }
+  .organic-formula { font-size:2rem; font-weight:700; font-family:'JetBrains Mono',monospace; color:var(--green); }
+  .organic-iupac { font-size:1rem; color:var(--muted); margin-top:0.2rem; margin-bottom:1rem; }
+  #organicCanvas { border-radius:10px; background:var(--bg3); display:block; }
+
+  /* SPECIAL */
+  .special-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+  .special-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; padding:1.2rem; cursor:pointer;
+    transition:all 0.2s;
+  }
+  .special-card:hover { border-color:var(--accent3); box-shadow: 0 0 12px rgba(246,173,85,0.15); }
+  .special-card h4 { color:var(--accent3); margin-bottom:0.4rem; }
+  .special-card p { font-size:0.82rem; color:var(--muted); margin-bottom:0.8rem; }
+  #specialCanvas { margin-top:0.75rem; border-radius:8px; background:var(--bg3); }
+
+  /* Legend */
+  .legend { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem; }
+  .legend-item { display:flex; align-items:center; gap:0.35rem; font-size:0.72rem; color:var(--muted); }
+  .legend-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+
+  .important-section { margin-top:1.5rem; }
+  .important-section h3 { font-size:1rem; color:var(--muted); margin-bottom:0.75rem; }
+  .important-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(70px,1fr)); gap:3px; }
+
+  /* Pause indicator */
+  .paused-badge { display:none; padding:0.2rem 0.6rem; background:rgba(252,129,129,0.15); color:var(--accent4); border:1px solid rgba(252,129,129,0.3); border-radius:20px; font-size:0.75rem; }
+  .paused-badge.show { display:inline-block; }
+
+  /* Animations */
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .animate-in { animation: fadeIn 0.3s ease; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🧪 Chem-Rizz</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('periodic')">Periodic Table</button>
+    <button class="nav-tab" onclick="showSection('combine')">Combine Elements</button>
+    <button class="nav-tab" onclick="showSection('polyatomic')">Polyatomic Ions</button>
+    <button class="nav-tab" onclick="showSection('organic')">Organic Chemistry</button>
+    <button class="nav-tab" onclick="showSection('special')">Special Structures</button>
+    <button class="nav-tab" onclick="showSection('chemrizz')">🧪 Chem-Rizz AI</button>
+    <button class="nav-tab" onclick="showSection('solver')">🔬 Problem Solver</button>
+  </div>
+</nav>
+
+<!-- PERIODIC TABLE SECTION -->
+<div class="section active" id="section-periodic">
+  <div class="section-title">Periodic Table</div>
+  <div class="section-sub">Click an element to view its Bohr model, configuration &amp; properties</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#fc8181"></div>Alkali Metal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f6ad55"></div>Alkaline Earth</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#63b3ed"></div>Transition Metal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4fd1c5"></div>Non-metal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#76e4f7"></div>Halogen</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b794f4"></div>Noble Gas</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#68d391"></div>Post-transition</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fbd38d"></div>Metalloid</div>
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="atom-canvas-wrap">
+      <canvas id="atomCanvas" width="200" height="200"></canvas>
+    </div>
+    <div class="element-info" id="elementInfo">
+      <div style="color:var(--muted); font-size:0.9rem;">Click an element to view details</div>
+    </div>
+  </div>
+
+  <div id="periodicGrid" class="periodic-grid"></div>
+
+  <div class="important-section">
+    <h3>Additional Important Elements</h3>
+    <div class="important-grid" id="importantGrid"></div>
+  </div>
+</div>
+
+<!-- COMBINE SECTION -->
+<div class="section" id="section-combine">
+  <div class="section-title">Combine Elements</div>
+  <div class="section-sub">Select 2 elements below, then click Combine to form a compound</div>
+
+  <div class="controls-bar">
+    <div class="selected-bar" id="selectedBar">
+      <span style="color:var(--muted);font-size:0.85rem;">No elements selected</span>
+    </div>
+    <span class="paused-badge" id="pausedBadge">⏸ Paused</span>
+    <button class="btn btn-primary" id="combineBtn" onclick="combineElements()" disabled>⚗ Combine</button>
+    <button class="btn btn-secondary" onclick="togglePause()" id="pauseBtn">⏸ Pause</button>
+    <button class="btn btn-danger" onclick="clearSelection()">✕ Clear</button>
+  </div>
+
+  <div class="compound-result animate-in" id="compoundResult">
+    <div id="compoundFormula" class="compound-formula"></div>
+    <div id="compoundName" class="compound-name"></div>
+    <div id="bondBadge"></div>
+    <canvas id="bondCanvas" width="560" height="200"></canvas>
+  </div>
+
+  <div style="margin-bottom:0.75rem; color:var(--muted); font-size:0.85rem;">Click elements to select (max 2):</div>
+  <div id="combineGrid" class="periodic-grid"></div>
+</div>
+
+<!-- POLYATOMIC SECTION -->
+<div class="section" id="section-polyatomic">
+  <div class="section-title">Polyatomic Ions</div>
+  <div class="section-sub">Select one polyatomic ion + one element to form a compound</div>
+
+  <div class="poly-grid" id="polyGrid"></div>
+
+  <div style="margin-bottom:0.75rem;margin-top:0.5rem;color:var(--muted);font-size:0.85rem;">Select an element to combine with the ion:</div>
+  <div id="polyElemGrid" class="periodic-grid"></div>
+
+  <div class="controls-bar" style="margin-top:1rem;">
+    <button class="btn btn-primary" id="polyCombineBtn" onclick="combinePolyatomic()" disabled>⚗ Form Compound</button>
+    <button class="btn btn-danger" onclick="clearPolySelection()">✕ Clear</button>
+  </div>
+
+  <div class="compound-result animate-in" id="polyResult">
+    <div id="polyFormula" class="compound-formula"></div>
+    <div id="polyName" class="compound-name"></div>
+    <div id="polyBadge"></div>
+    <canvas id="polyBondCanvas" width="560" height="180"></canvas>
+  </div>
+</div>
+
+<!-- ORGANIC SECTION -->
+<div class="section" id="section-organic">
+  <div class="section-title">Organic Chemistry</div>
+  <div class="section-sub">Explore hydrocarbons — select type and number of carbons</div>
+
+  <div class="organic-controls">
+    <div class="type-tabs">
+      <button class="type-tab active" onclick="setOrgType('alkane',this)">Alkane</button>
+      <button class="type-tab" onclick="setOrgType('alkene',this)">Alkene</button>
+      <button class="type-tab" onclick="setOrgType('alkyne',this)">Alkyne</button>
+    </div>
+    <div class="carbon-slider-wrap">
+      <label>Carbons:</label>
+      <input type="range" min="1" max="10" value="2" id="carbonSlider" oninput="updateOrganic()">
+      <span class="carbon-count" id="carbonCount">2</span>
+    </div>
+  </div>
+
+  <div class="organic-result">
+    <div class="organic-formula" id="organicFormula"></div>
+    <div class="organic-iupac" id="organicIupac"></div>
+    <canvas id="organicCanvas" width="900" height="220"></canvas>
+    <div id="bondTypeInfo" style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted);"></div>
+  </div>
+</div>
+
+<!-- SPECIAL STRUCTURES SECTION -->
+<div class="section" id="section-special">
+  <div class="section-title">Special Structures</div>
+  <div class="section-sub">Benzene ring and important functional groups</div>
+
+  <div class="special-grid">
+    <div class="special-card" onclick="showSpecial('benzene')">
+      <h4>Benzene (C₆H₆)</h4>
+      <p>Aromatic ring structure with alternating double bonds and delocalized π electrons</p>
+    </div>
+    <div class="special-card" onclick="showSpecial('alcohol')">
+      <h4>Alcohol — —OH</h4>
+      <p>Hydroxyl functional group. Example: Ethanol (CH₃CH₂OH)</p>
+    </div>
+    <div class="special-card" onclick="showSpecial('carboxylic')">
+      <h4>Carboxylic Acid — —COOH</h4>
+      <p>Carboxyl group. Example: Acetic acid (CH₃COOH)</p>
+    </div>
+    <div class="special-card" onclick="showSpecial('aldehyde')">
+      <h4>Aldehyde — —CHO</h4>
+      <p>Carbonyl at chain end. Example: Ethanal (CH₃CHO)</p>
+    </div>
+    <div class="special-card" onclick="showSpecial('ketone')">
+      <h4>Ketone — C=O</h4>
+      <p>Carbonyl in chain. Example: Propanone (CH₃COCH₃)</p>
+    </div>
+    <div class="special-card" onclick="showSpecial('amine')">
+      <h4>Amine — —NH₂</h4>
+      <p>Amino group. Example: Methylamine (CH₃NH₂)</p>
+    </div>
+  </div>
+
+  <div id="specialResult" style="margin-top:1.5rem;display:none;">
+    <div class="organic-result">
+      <div class="organic-formula" id="specialTitle"></div>
+      <div class="organic-iupac" id="specialDesc"></div>
+      <canvas id="specialCanvas" width="700" height="300"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- CHEM-RIZZ PROBLEM SOLVER SECTION -->
+<div class="section" id="section-solver">
+  <div class="section-title">🔬 Chem-Rizz Problem Solver</div>
+  <div class="section-sub">Offline step-by-step chemistry problem solver — 11th PU & JEE Main topics. No internet needed.</div>
+
+  <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+    <select id="solverTopic" style="background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:0.5rem 1rem;font-family:'Space Grotesk',sans-serif;font-size:0.88rem;cursor:pointer;outline:none;min-width:220px;">
+      <option value="">— Select Topic —</option>
+      <optgroup label="── Structure of Atom ──">
+        <option value="bohr_radius">Bohr Radius / Energy of Orbit</option>
+        <option value="de_broglie">de Broglie Wavelength</option>
+        <option value="rydberg">Rydberg / Spectral Lines</option>
+      </optgroup>
+      <optgroup label="── Mole Concept & Stoichiometry ──">
+        <option value="moles_mass">Moles ↔ Mass ↔ Particles</option>
+        <option value="molarity">Molarity / Dilution</option>
+        <option value="empirical">Empirical & Molecular Formula</option>
+        <option value="limiting_reagent">Limiting Reagent</option>
+      </optgroup>
+      <optgroup label="── Gaseous State ──">
+        <option value="ideal_gas">Ideal Gas Law (PV = nRT)</option>
+        <option value="combined_gas">Combined Gas Law</option>
+        <option value="graham">Graham's Law of Effusion</option>
+        <option value="dalton">Dalton's Law of Partial Pressure</option>
+        <option value="rms_speed">RMS Speed of Gas</option>
+      </optgroup>
+      <optgroup label="── Thermodynamics ──">
+        <option value="delta_h">Enthalpy Change (ΔH)</option>
+        <option value="hess">Hess's Law</option>
+        <option value="gibbs">Gibbs Free Energy (ΔG = ΔH − TΔS)</option>
+      </optgroup>
+      <optgroup label="── Chemical Equilibrium ──">
+        <option value="kc_kp">Kc and Kp</option>
+        <option value="degree_dissoc">Degree of Dissociation</option>
+        <option value="le_chatelier">Le Chatelier's Principle Check</option>
+      </optgroup>
+      <optgroup label="── Ionic Equilibrium ──">
+        <option value="ph_strong">pH of Strong Acid/Base</option>
+        <option value="ph_weak">pH of Weak Acid (Ka)</option>
+        <option value="buffer_ph">Buffer pH (Henderson-Hasselbalch)</option>
+        <option value="solubility">Solubility Product (Ksp)</option>
+      </optgroup>
+      <optgroup label="── Redox Reactions ──">
+        <option value="oxidation_number">Oxidation Number</option>
+        <option value="balancing_redox">Balance Redox (Half-Reaction Method)</option>
+        <option value="equivalent">Equivalent Concept (n-factor)</option>
+      </optgroup>
+      <optgroup label="── Chemical Bonding ──">
+        <option value="hybridization_calc">Find Hybridization</option>
+        <option value="formal_charge">Formal Charge</option>
+        <option value="bond_order">Bond Order (MOT)</option>
+      </optgroup>
+      <optgroup label="── Organic Chemistry ──">
+        <option value="degree_unsaturation">Degree of Unsaturation (DBE)</option>
+        <option value="iupac_naming">IUPAC Naming Guide</option>
+        <option value="isomer_count">Count Structural Isomers</option>
+      </optgroup>
+      <optgroup label="── s-Block & p-Block ──">
+        <option value="lattice_energy">Lattice Energy (Born-Haber concept)</option>
+        <option value="oxidation_state">Oxidation State in Compound</option>
+      </optgroup>
+    </select>
+    <button class="btn btn-primary" onclick="loadSolverTopic()">Load Problem Type</button>
+    <button class="btn btn-secondary" onclick="solveProblem()">⚗ Solve Step-by-Step</button>
+    <button class="btn btn-danger" onclick="clearSolver()">✕ Clear</button>
+  </div>
+
+  <!-- Dynamic input fields -->
+  <div id="solverInputs" style="
+    background:var(--card);border:1px solid var(--border2);
+    border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1rem;
+    display:none;
+  ">
+    <div id="solverInputTitle" style="font-size:1rem;font-weight:700;color:var(--accent2);margin-bottom:1rem;"></div>
+    <div id="solverFields" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.75rem;"></div>
+    <div id="solverFormulae" style="margin-top:1rem;font-size:0.82rem;color:var(--muted);background:var(--bg3);border-radius:8px;padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;line-height:1.8;"></div>
+  </div>
+
+  <!-- Output -->
+  <div id="solverOutput" style="
+    background:var(--card);border:1px solid var(--border2);
+    border-radius:14px;padding:1.5rem;display:none;
+  ">
+    <div style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:1rem;">📋 Solution</div>
+    <div id="solverSteps" style="font-family:'Space Grotesk',sans-serif;font-size:0.92rem;line-height:1.9;"></div>
+  </div>
+
+  <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--muted);text-align:center;">
+    Fully Offline · Real Formulas · Step-by-Step · 11th PU Karnataka & NCERT · JEE Main Linked Topics
+  </div>
+</div>
+
+<!-- CHEM-RIZZ AI CHATBOT SECTION -->
+<div class="section" id="section-chemrizz">
+  <div class="section-title">🧪 Chem-Rizz</div>
+  <div class="section-sub">Your offline 11th PU Chemistry AI tutor — ask chemistry from your syllabus</div>
+
+  <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('What is Hund\'s rule of maximum multiplicity?')">Hund's Rule</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('Explain the aufbau principle with examples')">Aufbau Principle</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('What are quantum numbers? Explain all four types.')">Quantum Numbers</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('Explain periodic trends: ionization energy, electronegativity, atomic radius')">Periodic Trends</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('What is VSEPR theory? Give examples of molecular shapes.')">VSEPR Theory</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('Explain ionic vs covalent vs metallic bonding with examples')">Chemical Bonding</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('What is mole concept? Explain with solved problems.')">Mole Concept</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('Explain laws of thermodynamics relevant to 11th PU chemistry')">Thermodynamics</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('What are alkanes, alkenes and alkynes? Give IUPAC naming rules.')">Organic Basics</button>
+      <button class="btn btn-secondary" style="font-size:0.78rem;padding:0.4rem 0.85rem;" onclick="chemRizzQuick('Explain equilibrium constant Kc and Kp with examples')">Equilibrium</button>
+    </div>
+  </div>
+
+  <div style="
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 540px;
+    box-shadow: 0 0 30px rgba(99,179,237,0.07);
+  ">
+    <!-- Chat header -->
+    <div style="
+      background: linear-gradient(135deg, rgba(99,179,237,0.12), rgba(79,209,197,0.08));
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.4rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    ">
+      <div style="
+        width:38px;height:38px;border-radius:50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display:flex;align-items:center;justify-content:center;
+        font-size:1.2rem;
+      ">🧪</div>
+      <div>
+        <div style="font-weight:700;font-size:1rem;color:var(--accent);">Chem-Rizz</div>
+        <div style="font-size:0.72rem;color:var(--green);">● Offline Mode · 11th PU Chemistry Tutor · No Internet Required</div>
+      </div>
+      <button onclick="clearChemRizz()" style="
+        margin-left:auto; background:transparent; border:1px solid var(--border);
+        color:var(--muted); border-radius:8px; padding:0.3rem 0.75rem;
+        cursor:pointer; font-size:0.78rem; font-family:'Space Grotesk',sans-serif;
+        transition:all 0.2s;
+      " onmouseover="this.style.borderColor='var(--accent4)';this.style.color='var(--accent4)'"
+         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        🗑 Clear
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chemRizzMessages" style="
+      flex:1; overflow-y:auto; padding:1.2rem;
+      display:flex; flex-direction:column; gap:0.85rem;
+      scrollbar-width:thin; scrollbar-color: var(--border) transparent;
+    ">
+      <div style="
+        background: linear-gradient(135deg, rgba(99,179,237,0.08), rgba(79,209,197,0.05));
+        border: 1px solid var(--border);
+        border-radius: 14px 14px 14px 4px;
+        padding: 1rem 1.2rem;
+        max-width: 85%; font-size:0.9rem; line-height:1.7; color:var(--text);
+      ">
+        <strong style="color:var(--accent);">Chem-Rizz 🧪</strong><br><br>
+        Hey! I'm <strong>Chem-Rizz</strong>, your personal 11th PU Chemistry tutor 🔬<br><br>
+        I work <strong style="color:var(--green);">completely offline</strong> — no internet or API needed! I explain <strong style="color:var(--accent2);">11th PU Karnataka Chemistry</strong> and JEE-level ideas linked to 11th PU chemistry, including:<br>
+        • Structure of Atom, Periodic Table, Chemical Bonding<br>
+        • Mole Concept, States of Matter, Thermodynamics, Equilibrium<br>
+        • Redox Reactions, Hydrogen, s-Block, p-Block basics<br>
+        • Organic Chemistry basics, Hydrocarbons, Environmental Chemistry<br><br>
+        Ask any chemistry question — I'll keep it correct, classy, and teacher-friendly, with just a little rizz at the start.
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div style="
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      display:flex; gap:0.75rem; align-items:flex-end;
+      background: var(--bg2);
+    ">
+      <textarea id="chemRizzInput" placeholder="Ask 11th PU Chemistry... (e.g. 'Explain hybridization of carbon')" style="
+        flex:1; background:var(--bg3);
+        border:1px solid var(--border); border-radius:10px;
+        color:var(--text); padding:0.7rem 1rem;
+        font-family:'Space Grotesk',sans-serif; font-size:0.9rem;
+        resize:none; height:48px; max-height:120px;
+        outline:none; line-height:1.5; transition:border-color 0.2s;
+        overflow-y:auto;
+      "
+        onfocus="this.style.borderColor='var(--accent)'"
+        onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChemRizz();}"
+        oninput="this.style.height='48px';this.style.height=Math.min(this.scrollHeight,120)+'px'"
+      ></textarea>
+      <button onclick="sendChemRizz()" id="chemRizzSendBtn" style="
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        border:none; border-radius:10px;
+        color:#0a0e1a; font-weight:700;
+        padding:0 1.2rem; height:48px;
+        cursor:pointer; font-size:1.1rem;
+        transition:all 0.2s; white-space:nowrap;
+        font-family:'Space Grotesk',sans-serif;
+      " onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 14px rgba(99,179,237,0.35)'"
+         onmouseout="this.style.transform='';this.style.boxShadow=''">
+        ➤ Send
+      </button>
+    </div>
+  </div>
+
+  <div style="margin-top:0.75rem;font-size:0.75rem;color:var(--muted);text-align:center;">
+    Fully Offline · Built-in Chemistry Knowledge Base · 11th PU Karnataka State Board, NCERT & JEE-linked Class 11 Topics · No API or Internet Required
+  </div>
+</div>
+
+<style>
+  #chemRizzMessages::-webkit-scrollbar { width:5px; }
+  #chemRizzMessages::-webkit-scrollbar-track { background:transparent; }
+  #chemRizzMessages::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+
+  @keyframes chemTyping {
+    0%,80%,100% { transform:scale(0.6); opacity:0.4; }
+    40% { transform:scale(1); opacity:1; }
+  }
+  .typing-dot {
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent); display:inline-block;
+    animation: chemTyping 1.2s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(2){animation-delay:0.2s;}
+  .typing-dot:nth-child(3){animation-delay:0.4s;}
+
+  .chem-rizz-msg {
+    animation: fadeIn 0.3s ease;
+  }
+</style>
+
+<script>
+// ===================== DATA =====================
+
+const ELEMENTS = [
+  // Period 1
+  {z:1,sym:'H',name:'Hydrogen',mass:1.008,cat:'nonmetal',valency:1,period:1,group:1},
+  {z:2,sym:'He',name:'Helium',mass:4.003,cat:'noble',valency:0,period:1,group:18},
+  // Period 2
+  {z:3,sym:'Li',name:'Lithium',mass:6.941,cat:'alkali',valency:1,period:2,group:1},
+  {z:4,sym:'Be',name:'Beryllium',mass:9.012,cat:'alkaline',valency:2,period:2,group:2},
+  {z:5,sym:'B',name:'Boron',mass:10.81,cat:'metalloid',valency:3,period:2,group:13},
+  {z:6,sym:'C',name:'Carbon',mass:12.011,cat:'nonmetal',valency:4,period:2,group:14},
+  {z:7,sym:'N',name:'Nitrogen',mass:14.007,cat:'nonmetal',valency:3,period:2,group:15},
+  {z:8,sym:'O',name:'Oxygen',mass:15.999,cat:'nonmetal',valency:2,period:2,group:16},
+  {z:9,sym:'F',name:'Fluorine',mass:18.998,cat:'halogen',valency:1,period:2,group:17},
+  {z:10,sym:'Ne',name:'Neon',mass:20.18,cat:'noble',valency:0,period:2,group:18},
+  // Period 3
+  {z:11,sym:'Na',name:'Sodium',mass:22.99,cat:'alkali',valency:1,period:3,group:1},
+  {z:12,sym:'Mg',name:'Magnesium',mass:24.305,cat:'alkaline',valency:2,period:3,group:2},
+  {z:13,sym:'Al',name:'Aluminium',mass:26.982,cat:'post',valency:3,period:3,group:13},
+  {z:14,sym:'Si',name:'Silicon',mass:28.086,cat:'metalloid',valency:4,period:3,group:14},
+  {z:15,sym:'P',name:'Phosphorus',mass:30.974,cat:'nonmetal',valency:3,period:3,group:15},
+  {z:16,sym:'S',name:'Sulfur',mass:32.06,cat:'nonmetal',valency:2,period:3,group:16},
+  {z:17,sym:'Cl',name:'Chlorine',mass:35.45,cat:'halogen',valency:1,period:3,group:17},
+  {z:18,sym:'Ar',name:'Argon',mass:39.948,cat:'noble',valency:0,period:3,group:18},
+  // Period 4
+  {z:19,sym:'K',name:'Potassium',mass:39.098,cat:'alkali',valency:1,period:4,group:1},
+  {z:20,sym:'Ca',name:'Calcium',mass:40.078,cat:'alkaline',valency:2,period:4,group:2},
+  {z:21,sym:'Sc',name:'Scandium',mass:44.956,cat:'transition',valency:3,period:4,group:3},
+  {z:22,sym:'Ti',name:'Titanium',mass:47.867,cat:'transition',valency:4,period:4,group:4},
+  {z:23,sym:'V',name:'Vanadium',mass:50.942,cat:'transition',valency:5,period:4,group:5},
+  {z:24,sym:'Cr',name:'Chromium',mass:51.996,cat:'transition',valency:6,period:4,group:6},
+  {z:25,sym:'Mn',name:'Manganese',mass:54.938,cat:'transition',valency:7,period:4,group:7},
+  {z:26,sym:'Fe',name:'Iron',mass:55.845,cat:'transition',valency:3,period:4,group:8},
+  {z:27,sym:'Co',name:'Cobalt',mass:58.933,cat:'transition',valency:3,period:4,group:9},
+  {z:28,sym:'Ni',name:'Nickel',mass:58.693,cat:'transition',valency:2,period:4,group:10},
+  {z:29,sym:'Cu',name:'Copper',mass:63.546,cat:'transition',valency:2,period:4,group:11},
+  {z:30,sym:'Zn',name:'Zinc',mass:65.38,cat:'transition',valency:2,period:4,group:12},
+  {z:31,sym:'Ga',name:'Gallium',mass:69.723,cat:'post',valency:3,period:4,group:13},
+  {z:32,sym:'Ge',name:'Germanium',mass:72.630,cat:'metalloid',valency:4,period:4,group:14},
+  {z:33,sym:'As',name:'Arsenic',mass:74.922,cat:'metalloid',valency:3,period:4,group:15},
+  {z:34,sym:'Se',name:'Selenium',mass:78.971,cat:'nonmetal',valency:2,period:4,group:16},
+  // Period 5
+  {z:35,sym:'Br',name:'Bromine',mass:79.904,cat:'halogen',valency:1,period:4,group:17},
+  {z:36,sym:'Kr',name:'Krypton',mass:83.798,cat:'noble',valency:0,period:4,group:18},
+  {z:37,sym:'Rb',name:'Rubidium',mass:85.468,cat:'alkali',valency:1,period:5,group:1},
+  {z:38,sym:'Sr',name:'Strontium',mass:87.620,cat:'alkaline',valency:2,period:5,group:2},
+  {z:40,sym:'Zr',name:'Zirconium',mass:91.224,cat:'transition',valency:4,period:5,group:4},
+  {z:42,sym:'Mo',name:'Molybdenum',mass:95.950,cat:'transition',valency:6,period:5,group:6},
+  {z:47,sym:'Ag',name:'Silver',mass:107.868,cat:'transition',valency:1,period:5,group:11},
+  {z:48,sym:'Cd',name:'Cadmium',mass:112.414,cat:'transition',valency:2,period:5,group:12},
+  {z:50,sym:'Sn',name:'Tin',mass:118.710,cat:'post',valency:4,period:5,group:14},
+  {z:51,sym:'Sb',name:'Antimony',mass:121.760,cat:'metalloid',valency:3,period:5,group:15},
+  {z:52,sym:'Te',name:'Tellurium',mass:127.600,cat:'metalloid',valency:2,period:5,group:16},
+  {z:53,sym:'I',name:'Iodine',mass:126.904,cat:'halogen',valency:1,period:5,group:17},
+  {z:54,sym:'Xe',name:'Xenon',mass:131.293,cat:'noble',valency:0,period:5,group:18},
+  // Period 6
+  {z:55,sym:'Cs',name:'Caesium',mass:132.905,cat:'alkali',valency:1,period:6,group:1},
+  {z:56,sym:'Ba',name:'Barium',mass:137.327,cat:'alkaline',valency:2,period:6,group:2},
+  {z:72,sym:'Hf',name:'Hafnium',mass:178.490,cat:'transition',valency:4,period:6,group:4},
+  {z:74,sym:'W',name:'Tungsten',mass:183.840,cat:'transition',valency:6,period:6,group:6},
+  {z:78,sym:'Pt',name:'Platinum',mass:195.084,cat:'transition',valency:4,period:6,group:10},
+  {z:79,sym:'Au',name:'Gold',mass:196.967,cat:'transition',valency:3,period:6,group:11},
+  {z:80,sym:'Hg',name:'Mercury',mass:200.592,cat:'transition',valency:2,period:6,group:12},
+  {z:81,sym:'Tl',name:'Thallium',mass:204.383,cat:'post',valency:1,period:6,group:13},
+  {z:82,sym:'Pb',name:'Lead',mass:207.200,cat:'post',valency:2,period:6,group:14},
+  {z:83,sym:'Bi',name:'Bismuth',mass:208.980,cat:'post',valency:3,period:6,group:15},
+  // Period 7
+  {z:88,sym:'Ra',name:'Radium',mass:226.000,cat:'alkaline',valency:2,period:7,group:2},
+  {z:92,sym:'U',name:'Uranium',mass:238.029,cat:'actinide',valency:4,period:7,group:3},
+];
+
+// Electronic config data
+function getElectronConfig(z) {
+  // Subshell filling order (Aufbau)
+  const order = [
+    [1,'s',2],[2,'s',2],[2,'p',6],[3,'s',2],[3,'p',6],[4,'s',2],[3,'d',10],[4,'p',6],
+    [5,'s',2],[4,'d',10],[5,'p',6],[6,'s',2],[4,'f',14],[5,'d',10],[6,'p',6],
+    [7,'s',2],[5,'f',14],[6,'d',10],[7,'p',6]
+  ];
+  let remaining = z;
+  let subshells = [];
+  for(let [n,l,cap] of order) {
+    if(remaining <= 0) break;
+    let fill = Math.min(remaining, cap);
+    subshells.push({n, l, fill});
+    remaining -= fill;
+  }
+  return subshells;
+}
+
+function shellConfig(z) {
+  const shells = [0, 2, 8, 18, 32, 50];
+  const shellMax = [2, 8, 18, 18, 18, 32];
+  let result = [];
+  let rem = z;
+  for(let i=0; i<shellMax.length && rem>0; i++) {
+    let e = Math.min(rem, shellMax[i]);
+    result.push(e);
+    rem -= e;
+  }
+  return result;
+}
+
+function subshellStr(z) {
+  const subs = getElectronConfig(z);
+  return subs.map(s => `${s.n}${s.l}${toSuper(s.fill)}`).join(' ');
+}
+
+function toSuper(n) {
+  const sup = '⁰¹²³⁴⁵⁶⁷⁸⁹¹⁰';
+  if(n <= 9) return '⁰¹²³⁴⁵⁶⁷⁸⁹'[n];
+  if(n===10) return '¹⁰';
+  if(n===12) return '¹²';
+  if(n===14) return '¹⁴';
+  return String(n);
+}
+
+const CAT_COLOR = {
+  nonmetal:'#4fd1c5', noble:'#b794f4', alkali:'#fc8181', alkaline:'#f6ad55',
+  transition:'#63b3ed', post:'#68d391', metalloid:'#fbd38d', halogen:'#76e4f7',
+  lanthanide:'#ed64a6', actinide:'#f687b3'
+};
+
+// ===================== PERIODIC TABLE LAYOUT =====================
+const LAYOUT = [ // [z, row, col] for main table elements
+  [1,1,1],[2,1,18],
+  [3,2,1],[4,2,2],[5,2,13],[6,2,14],[7,2,15],[8,2,16],[9,2,17],[10,2,18],
+  [11,3,1],[12,3,2],[13,3,13],[14,3,14],[15,3,15],[16,3,16],[17,3,17],[18,3,18],
+  [19,4,1],[20,4,2],
+];
+
+// ===================== CANVAS - BOHR MODEL =====================
+let animFrame = null;
+let animPaused = false;
+let animAngles = {};
+
+function drawBohr(canvasId, z, size=200) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const shells = shellConfig(z);
+  const cx = size/2, cy = size/2;
+  const maxR = size/2 - 8;
+  const minR = 14;
+  const numShells = shells.length;
+
+  if(!animAngles[canvasId]) animAngles[canvasId] = shells.map(()=>0);
+
+  function draw() {
+    ctx.clearRect(0,0,size,size);
+    // Background
+    ctx.fillStyle = '#0d1421';
+    ctx.fillRect(0,0,size,size);
+
+    // Nucleus
+    let nucR = 12;
+    let grd = ctx.createRadialGradient(cx,cy,0,cx,cy,nucR);
+    grd.addColorStop(0,'#f6e05e');
+    grd.addColorStop(0.5,'#ed8936');
+    grd.addColorStop(1,'rgba(237,137,54,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(cx,cy,nucR,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold ${nucR>10?8:6}px JetBrains Mono, monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(z, cx, cy);
+
+    shells.forEach((count, si) => {
+      const t = si / numShells;
+      const r = minR + (maxR - minR) * ((si+1) / numShells) * 0.95;
+      const color = `hsl(${180+si*40},70%,60%)`;
+
+      // Orbit ring
+      ctx.strokeStyle = `rgba(${si===0?'100,210,210':si===1?'130,160,240':si===2?'200,140,240':si===3?'240,180,100':si===4?'240,120,120':'180,240,140'},0.22)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+
+      // Electrons
+      const baseAngle = animAngles[canvasId][si];
+      for(let e=0; e<count; e++) {
+        const angle = baseAngle + (e / count) * Math.PI * 2;
+        const ex = cx + r * Math.cos(angle);
+        const ey = cy + r * Math.sin(angle);
+
+        // Glow
+        let eg = ctx.createRadialGradient(ex,ey,0,ex,ey,6);
+        eg.addColorStop(0, color);
+        eg.addColorStop(0.5, color.replace('60%','60%').replace('rgba',''));
+        eg.addColorStop(1,'transparent');
+        ctx.fillStyle = eg;
+        ctx.beginPath(); ctx.arc(ex,ey,6,0,Math.PI*2); ctx.fill();
+
+        // Dot
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(ex,ey,2.5,0,Math.PI*2); ctx.fill();
+      }
+    });
+
+    if(!animPaused) {
+      shells.forEach((_, si) => {
+        animAngles[canvasId][si] += 0.012 / (si+1);
+      });
+      animFrame = requestAnimationFrame(draw);
+    }
+  }
+
+  if(animFrame) cancelAnimationFrame(animFrame);
+  animAngles[canvasId] = shells.map(()=>Math.random()*Math.PI*2);
+  draw();
+}
+
+// ===================== ELEMENT CELL =====================
+function makeCell(el, gridId, selectable=false) {
+  const div = document.createElement('div');
+  div.className = `element-cell el-cat-${el.cat}`;
+  div.style.cssText = `--el-color: ${CAT_COLOR[el.cat] || '#63b3ed'}`;
+  div.innerHTML = `<span class="el-num">${el.z}</span><span class="el-sym">${el.sym}</span><span class="el-name">${el.name.substring(0,6)}</span>`;
+  div.title = `${el.name} (Z=${el.z})`;
+  if(selectable) {
+    div.onclick = () => toggleSelect(el, div, gridId);
+  } else {
+    div.onclick = () => showElement(el, div);
+  }
+  return div;
+}
+
+function buildPeriodicGrid(containerId, selectable=false) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const grid = {};
+  const mainEls = ELEMENTS.slice(0, 20);
+
+  LAYOUT.forEach(([z,row,col]) => {
+    const el = ELEMENTS.find(e=>e.z===z);
+    if(el) grid[`${row},${col}`] = el;
+  });
+
+  for(let row=1; row<=4; row++) {
+    for(let col=1; col<=18; col++) {
+      const el = grid[`${row},${col}`];
+      if(el) {
+        container.appendChild(makeCell(el, containerId, selectable));
+      } else {
+        const ph = document.createElement('div');
+        ph.className = 'element-cell placeholder';
+        container.appendChild(ph);
+      }
+    }
+  }
+}
+
+// ===================== SHOW ELEMENT DETAIL =====================
+let currentEl = null;
+
+function showElement(el, cell) {
+  // Deselect previous
+  document.querySelectorAll('#periodicGrid .element-cell.active-detail').forEach(c => c.classList.remove('active-detail'));
+  if(cell) cell.classList.add('active-detail');
+
+  currentEl = el;
+  const info = document.getElementById('elementInfo');
+  const shells = shellConfig(el.z);
+  const subshells = subshellStr(el.z);
+
+  info.innerHTML = `
+    <h2>${el.sym}</h2>
+    <div class="el-full-name">${el.name}</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">Atomic Number</div><div class="info-value">${el.z}</div></div>
+      <div class="info-item"><div class="info-label">Atomic Mass</div><div class="info-value">${el.mass}</div></div>
+      <div class="info-item"><div class="info-label">Valency</div><div class="info-value">${el.valency}</div></div>
+      <div class="info-item"><div class="info-label">Category</div><div class="info-value" style="text-transform:capitalize">${el.cat}</div></div>
+    </div>
+    <div class="config-section">
+      <div class="config-label">Shell Configuration</div>
+      <div class="config-shells">${shells.join(' | ')}</div>
+      <div class="config-label" style="margin-top:0.5rem;">Subshell Configuration</div>
+      <div class="config-subshells">${subshells}</div>
+    </div>
+  `;
+
+  drawBohr('atomCanvas', el.z);
+}
+
+// Build important elements grid
+function buildImportantGrid() {
+  const importantEls = ELEMENTS.filter(e => e.z > 20);
+  const grid = document.getElementById('importantGrid');
+  grid.innerHTML = '';
+  importantEls.forEach(el => {
+    grid.appendChild(makeCell(el, 'importantGrid', false));
+  });
+}
+
+// ===================== COMBINE LOGIC =====================
+let selected = [];
+let combineAnimFrame = null;
+
+function buildCombineGrid() {
+  const container = document.getElementById('combineGrid');
+  container.innerHTML = '';
+  ELEMENTS.forEach(el => {
+    container.appendChild(makeCell(el, 'combineGrid', true));
+  });
+}
+
+function toggleSelect(el, cell, gridId) {
+  const idx = selected.findIndex(s=>s.z===el.z);
+  if(idx >= 0) {
+    selected.splice(idx,1);
+    cell.classList.remove('selected');
+  } else {
+    if(selected.length >= 2) return;
+    selected.push(el);
+    cell.classList.add('selected');
+  }
+  updateSelectedBar();
+}
+
+function updateSelectedBar() {
+  const bar = document.getElementById('selectedBar');
+  const btn = document.getElementById('combineBtn');
+  if(selected.length === 0) {
+    bar.innerHTML = '<span style="color:var(--muted);font-size:0.85rem;">No elements selected</span>';
+  } else {
+    bar.innerHTML = selected.map(e=>`<span class="sel-chip">${e.sym} — ${e.name}</span>`).join('');
+  }
+  btn.disabled = selected.length !== 2;
+}
+
+function clearSelection() {
+  selected = [];
+  document.querySelectorAll('#combineGrid .element-cell.selected').forEach(c=>c.classList.remove('selected'));
+  updateSelectedBar();
+  document.getElementById('compoundResult').classList.remove('show');
+}
+
+// ===================== COMPOUND DATABASE =====================
+const COMPOUNDS = {
+  'H-O': {formula:'H₂O',name:'Water',bond:'covalent'},
+  'H-N': {formula:'NH₃',name:'Ammonia',bond:'covalent'},
+  'H-C': {formula:'CH₄',name:'Methane',bond:'covalent'},
+  'H-Cl': {formula:'HCl',name:'Hydrogen Chloride',bond:'covalent'},
+  'H-F': {formula:'HF',name:'Hydrogen Fluoride',bond:'covalent'},
+  'H-Br': {formula:'HBr',name:'Hydrogen Bromide',bond:'covalent'},
+  'H-I': {formula:'HI',name:'Hydrogen Iodide',bond:'covalent'},
+  'H-S': {formula:'H₂S',name:'Hydrogen Sulphide',bond:'covalent'},
+  'Na-Cl': {formula:'NaCl',name:'Sodium Chloride (Common Salt)',bond:'ionic'},
+  'Na-F': {formula:'NaF',name:'Sodium Fluoride',bond:'ionic'},
+  'Na-Br': {formula:'NaBr',name:'Sodium Bromide',bond:'ionic'},
+  'Na-I': {formula:'NaI',name:'Sodium Iodide',bond:'ionic'},
+  'Na-O': {formula:'Na₂O',name:'Sodium Oxide',bond:'ionic'},
+  'K-Cl': {formula:'KCl',name:'Potassium Chloride',bond:'ionic'},
+  'K-Br': {formula:'KBr',name:'Potassium Bromide',bond:'ionic'},
+  'K-I': {formula:'KI',name:'Potassium Iodide',bond:'ionic'},
+  'K-O': {formula:'K₂O',name:'Potassium Oxide',bond:'ionic'},
+  'K-F': {formula:'KF',name:'Potassium Fluoride',bond:'ionic'},
+  'Ca-O': {formula:'CaO',name:'Calcium Oxide (Quicklime)',bond:'ionic'},
+  'Ca-Cl': {formula:'CaCl₂',name:'Calcium Chloride',bond:'ionic'},
+  'Ca-F': {formula:'CaF₂',name:'Calcium Fluoride (Fluorite)',bond:'ionic'},
+  'Mg-O': {formula:'MgO',name:'Magnesium Oxide',bond:'ionic'},
+  'Mg-Cl': {formula:'MgCl₂',name:'Magnesium Chloride',bond:'ionic'},
+  'Al-O': {formula:'Al₂O₃',name:'Aluminium Oxide (Alumina)',bond:'ionic'},
+  'Al-Cl': {formula:'AlCl₃',name:'Aluminium Chloride',bond:'covalent'},
+  'Fe-O': {formula:'Fe₂O₃',name:'Iron(III) Oxide (Rust)',bond:'ionic'},
+  'Fe-Cl': {formula:'FeCl₃',name:'Iron(III) Chloride',bond:'ionic'},
+  'Cu-O': {formula:'CuO',name:'Copper(II) Oxide',bond:'ionic'},
+  'Cu-Cl': {formula:'CuCl₂',name:'Copper(II) Chloride',bond:'ionic'},
+  'Zn-O': {formula:'ZnO',name:'Zinc Oxide',bond:'ionic'},
+  'Zn-Cl': {formula:'ZnCl₂',name:'Zinc Chloride',bond:'ionic'},
+  'Ag-Cl': {formula:'AgCl',name:'Silver Chloride',bond:'ionic'},
+  'Ag-Br': {formula:'AgBr',name:'Silver Bromide',bond:'ionic'},
+  'Ag-I': {formula:'AgI',name:'Silver Iodide',bond:'ionic'},
+  'Pb-O': {formula:'PbO',name:'Lead(II) Oxide (Litharge)',bond:'ionic'},
+  'Au-Cl': {formula:'AuCl₃',name:'Gold(III) Chloride',bond:'ionic'},
+  'Ba-O': {formula:'BaO',name:'Barium Oxide',bond:'ionic'},
+  'Ba-Cl': {formula:'BaCl₂',name:'Barium Chloride',bond:'ionic'},
+  'C-O': {formula:'CO₂',name:'Carbon Dioxide',bond:'covalent'},
+  'N-O': {formula:'NO₂',name:'Nitrogen Dioxide',bond:'covalent'},
+  'S-O': {formula:'SO₂',name:'Sulfur Dioxide',bond:'covalent'},
+  'Si-O': {formula:'SiO₂',name:'Silicon Dioxide (Quartz)',bond:'covalent'},
+  'Li-Cl': {formula:'LiCl',name:'Lithium Chloride',bond:'ionic'},
+  'Li-O': {formula:'Li₂O',name:'Lithium Oxide',bond:'ionic'},
+};
+
+function getCompound(el1, el2) {
+  const keys = [
+    `${el1.sym}-${el2.sym}`,
+    `${el2.sym}-${el1.sym}`,
+  ];
+  for(let k of keys) if(COMPOUNDS[k]) return COMPOUNDS[k];
+
+  // Dynamic generation
+  return generateCompound(el1, el2);
+}
+
+function generateCompound(el1, el2) {
+  // Noble gas check
+  if(el1.valency===0 || el2.valency===0) return null;
+
+  const v1 = el1.valency, v2 = el2.valency;
+  const lcm = (a,b) => a*b/gcd(a,b);
+  const gcd = (a,b) => b?gcd(b,a%b):a;
+  const n1 = v2/gcd(v1,v2), n2 = v1/gcd(v1,v2);
+
+  // Determine which is metal (cation)
+  const metals = ['alkali','alkaline','transition','post'];
+  const isMetal1 = metals.includes(el1.cat);
+  const isMetal2 = metals.includes(el2.cat);
+
+  let formula, name, bond;
+
+  if(isMetal1 && !isMetal2) {
+    const sym1 = n1===1?el1.sym:`${el1.sym}${toSub(n1)}`;
+    const sym2 = n2===1?el2.sym:`${el2.sym}${toSub(n2)}`;
+    formula = `${sym1}${sym2}`;
+    name = `${el1.name} ${anionName(el2.sym)}`;
+    bond = 'ionic';
+  } else if(!isMetal1 && isMetal2) {
+    const sym1 = n2===1?el2.sym:`${el2.sym}${toSub(n2)}`;
+    const sym2 = n1===1?el1.sym:`${el1.sym}${toSub(n1)}`;
+    formula = `${sym1}${sym2}`;
+    name = `${el2.name} ${anionName(el1.sym)}`;
+    bond = 'ionic';
+  } else if(!isMetal1 && !isMetal2) {
+    const sym1 = n1===1?el1.sym:`${el1.sym}${toSub(n1)}`;
+    const sym2 = n2===1?el2.sym:`${el2.sym}${toSub(n2)}`;
+    formula = `${sym1}${sym2}`;
+    name = `${iupacPrefix(n1)}${el1.name.toLowerCase()} ${iupacPrefix(n2)}${anionName(el2.sym)}`;
+    bond = 'covalent';
+  } else {
+    return null; // metal-metal
+  }
+
+  return {formula, name, bond};
+}
+
+function anionName(sym) {
+  const anions = {O:'oxide',Cl:'chloride',F:'fluoride',Br:'bromide',I:'iodide',S:'sulphide',N:'nitride',P:'phosphide',H:'hydride'};
+  return anions[sym] || sym.toLowerCase()+'ide';
+}
+
+function iupacPrefix(n) {
+  return ['','mono','di','tri','tetra','penta','hexa','hepta','octa','nona','deca'][n] || '';
+}
+
+function toSub(n) {
+  return '₀₁₂₃₄₅₆₇₈₉'[n] || n;
+}
+
+function combineElements() {
+  if(selected.length !== 2) return;
+  const [el1, el2] = selected;
+  const compound = getCompound(el1, el2);
+  const result = document.getElementById('compoundResult');
+  result.classList.add('show');
+
+  if(!compound) {
+    document.getElementById('compoundFormula').textContent = '—';
+    document.getElementById('compoundName').textContent = 'Compound not possible';
+    document.getElementById('bondBadge').innerHTML = '<span class="bond-type-badge impossible-badge">❌ Not Possible</span>';
+    clearBondCanvas();
+    return;
+  }
+
+  document.getElementById('compoundFormula').innerHTML = compound.formula;
+  document.getElementById('compoundName').textContent = compound.name;
+  document.getElementById('bondBadge').innerHTML = compound.bond === 'ionic'
+    ? '<span class="bond-type-badge ionic-badge">⚡ Ionic Bond</span>'
+    : '<span class="bond-type-badge covalent-badge">🔗 Covalent Bond</span>';
+
+  drawBondStructure('bondCanvas', el1, el2, compound);
+}
+
+function clearBondCanvas() {
+  const c = document.getElementById('bondCanvas');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+}
+
+// ===================== BOND STRUCTURE DRAWING =====================
+function drawBondStructure(canvasId, el1, el2, compound) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const w = canvas.width, h = canvas.height;
+  ctx.fillStyle = '#0d1421';
+  ctx.fillRect(0,0,w,h);
+
+  if(compound.bond === 'ionic') {
+    drawIonicBond(ctx, el1, el2, compound, w, h);
+  } else {
+    drawCovalentBond(ctx, el1, el2, compound, w, h);
+  }
+}
+
+function drawIonicBond(ctx, el1, el2, compound, w, h) {
+  const cx = w/2, cy = h/2;
+  const r = 50;
+
+  const metals = ['alkali','alkaline','transition','post'];
+  let cation = metals.includes(el1.cat) ? el1 : el2;
+  let anion = metals.includes(el1.cat) ? el2 : el1;
+
+  // Arrow for electron transfer
+  ctx.strokeStyle = '#f6ad55';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6,4]);
+  ctx.beginPath();
+  ctx.moveTo(cx-20,cy);
+  ctx.lineTo(cx+20,cy);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrowhead
+  ctx.fillStyle = '#f6ad55';
+  ctx.beginPath();
+  ctx.moveTo(cx+20,cy);
+  ctx.lineTo(cx+12,cy-6);
+  ctx.lineTo(cx+12,cy+6);
+  ctx.fill();
+
+  // Cation (left)
+  const cx1 = cx - 120, cx2 = cx + 120;
+  drawAtomCircle(ctx, cx1, cy, r, cation, '+');
+  drawAtomCircle(ctx, cx2, cy, r, anion, '-');
+
+  // Labels
+  ctx.font = 'bold 14px Space Grotesk, sans-serif';
+  ctx.fillStyle = '#f6ad55';
+  ctx.textAlign = 'center';
+  ctx.fillText('Electron Transfer', cx, cy+80);
+
+  ctx.fillStyle = '#8ba3bc';
+  ctx.font = '11px Space Grotesk, sans-serif';
+  ctx.fillText(`${cation.sym}⁺ (cation)`, cx1, cy+r+18);
+  ctx.fillText(`${anion.sym}⁻ (anion)`, cx2, cy+r+18);
+}
+
+function drawAtomCircle(ctx, cx, cy, r, el, charge) {
+  const color = CAT_COLOR[el.cat] || '#63b3ed';
+  ctx.beginPath();
+  ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Fill with slight tint
+  ctx.fillStyle = color+'22';
+  ctx.fill();
+
+  ctx.font = 'bold 22px Space Grotesk, sans-serif';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(el.sym, cx, cy-4);
+
+  ctx.font = '11px Space Grotesk, sans-serif';
+  ctx.fillStyle = '#8ba3bc';
+  ctx.fillText(el.name, cx, cy+14);
+
+  if(charge) {
+    ctx.font = 'bold 14px JetBrains Mono, monospace';
+    ctx.fillStyle = charge==='+' ? '#fc8181' : '#63b3ed';
+    ctx.fillText(charge, cx+r-8, cy-r+12);
+  }
+}
+
+function drawCovalentBond(ctx, el1, el2, compound, w, h) {
+  const cx = w/2, cy = h/2;
+  const r = 45;
+
+  // Determine bond order from formula
+  let bondLines = 1;
+  if(el1.sym==='O'&&el2.sym==='O') bondLines=2;
+  if(el1.sym==='N'&&el2.sym==='N') bondLines=3;
+  if(el1.sym==='C'&&el2.sym==='O') bondLines=2;
+
+  const cx1 = cx-110, cx2 = cx+110;
+  drawAtomCircle(ctx, cx1, cy, r, el1, '');
+  drawAtomCircle(ctx, cx2, cy, r, el2, '');
+
+  // Bond lines
+  const gap = 8;
+  const x1 = cx1+r, x2 = cx2-r;
+  ctx.strokeStyle = '#4fd1c5';
+  ctx.lineWidth = 2.5;
+  if(bondLines===1) {
+    ctx.beginPath(); ctx.moveTo(x1,cy); ctx.lineTo(x2,cy); ctx.stroke();
+  } else if(bondLines===2) {
+    ctx.beginPath(); ctx.moveTo(x1,cy-gap/2); ctx.lineTo(x2,cy-gap/2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1,cy+gap/2); ctx.lineTo(x2,cy+gap/2); ctx.stroke();
+  } else {
+    ctx.beginPath(); ctx.moveTo(x1,cy-gap); ctx.lineTo(x2,cy-gap); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1,cy); ctx.lineTo(x2,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1,cy+gap); ctx.lineTo(x2,cy+gap); ctx.stroke();
+  }
+
+  // Electron dots (shared pair dots)
+  const midX = (x1+x2)/2;
+  ctx.fillStyle = '#f6ad55';
+  ctx.beginPath(); ctx.arc(midX-8, cy-r-6, 3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(midX+8, cy-r-6, 3, 0, Math.PI*2); ctx.fill();
+
+  ctx.font = 'bold 14px Space Grotesk, sans-serif';
+  ctx.fillStyle = '#4fd1c5';
+  ctx.textAlign = 'center';
+  const bondLabel = ['','Single','Double','Triple'][bondLines];
+  ctx.fillText(`${bondLabel} Covalent Bond`, cx, cy+80);
+
+  ctx.fillStyle = '#8ba3bc';
+  ctx.font = '11px Space Grotesk, sans-serif';
+  ctx.fillText('Shared electron pair(s)', cx, cy+96);
+}
+
+function togglePause() {
+  animPaused = !animPaused;
+  document.getElementById('pauseBtn').textContent = animPaused ? '▶ Resume' : '⏸ Pause';
+  document.getElementById('pausedBadge').classList.toggle('show', animPaused);
+  if(!animPaused && currentEl) drawBohr('atomCanvas', currentEl.z);
+}
+
+// ===================== POLYATOMIC IONS =====================
+const POLYIONS = [
+  {sym:'OH⁻',name:'Hydroxide',charge:-1,valency:1,formula:'OH'},
+  {sym:'SO₄²⁻',name:'Sulphate',charge:-2,valency:2,formula:'SO4'},
+  {sym:'CO₃²⁻',name:'Carbonate',charge:-2,valency:2,formula:'CO3'},
+  {sym:'NH₄⁺',name:'Ammonium',charge:+1,valency:1,formula:'NH4'},
+  {sym:'NO₃⁻',name:'Nitrate',charge:-1,valency:1,formula:'NO3'},
+  {sym:'PO₄³⁻',name:'Phosphate',charge:-3,valency:3,formula:'PO4'},
+  {sym:'HCO₃⁻',name:'Bicarbonate',charge:-1,valency:1,formula:'HCO3'},
+  {sym:'MnO₄⁻',name:'Permanganate',charge:-1,valency:1,formula:'MnO4'},
+  {sym:'Cr₂O₇²⁻',name:'Dichromate',charge:-2,valency:2,formula:'Cr2O7'},
+  {sym:'CN⁻',name:'Cyanide',charge:-1,valency:1,formula:'CN'},
+];
+
+let selectedIon = null;
+let selectedPolyEl = null;
+
+function buildPolyGrid() {
+  const grid = document.getElementById('polyGrid');
+  grid.innerHTML = '';
+  POLYIONS.forEach(ion => {
+    const div = document.createElement('div');
+    div.className = 'poly-card';
+    div.innerHTML = `<div class="poly-sym">${ion.sym}</div><div class="poly-name">${ion.name}</div><div class="poly-charge">Charge: ${ion.charge>0?'+':''}${ion.charge}</div>`;
+    div.onclick = () => {
+      document.querySelectorAll('.poly-card').forEach(c=>c.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedIon = ion;
+      updatePolyCombineBtn();
+    };
+    grid.appendChild(div);
+  });
+}
+
+function buildPolyElemGrid() {
+  const container = document.getElementById('polyElemGrid');
+  container.innerHTML = '';
+  ELEMENTS.filter(e => ['alkali','alkaline','transition','post'].includes(e.cat) || e.z<=20).forEach(el => {
+    const cell = makeCell(el, 'polyElemGrid', false);
+    cell.onclick = () => {
+      document.querySelectorAll('#polyElemGrid .element-cell.selected').forEach(c=>c.classList.remove('selected'));
+      cell.classList.add('selected');
+      selectedPolyEl = el;
+      updatePolyCombineBtn();
+    };
+    container.appendChild(cell);
+  });
+}
+
+function updatePolyCombineBtn() {
+  document.getElementById('polyCombineBtn').disabled = !(selectedIon && selectedPolyEl);
+}
+
+function clearPolySelection() {
+  selectedIon = null; selectedPolyEl = null;
+  document.querySelectorAll('.poly-card.selected').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('#polyElemGrid .element-cell.selected').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('polyCombineBtn').disabled = true;
+  document.getElementById('polyResult').classList.remove('show');
+}
+
+const POLY_COMPOUNDS = {
+  'Na-OH': {formula:'NaOH',name:'Sodium Hydroxide (Caustic Soda)'},
+  'K-OH': {formula:'KOH',name:'Potassium Hydroxide (Caustic Potash)'},
+  'Ca-OH': {formula:'Ca(OH)₂',name:'Calcium Hydroxide (Slaked Lime)'},
+  'Mg-OH': {formula:'Mg(OH)₂',name:'Magnesium Hydroxide (Milk of Magnesia)'},
+  'Al-OH': {formula:'Al(OH)₃',name:'Aluminium Hydroxide'},
+  'Fe-OH': {formula:'Fe(OH)₃',name:'Iron(III) Hydroxide'},
+  'Cu-OH': {formula:'Cu(OH)₂',name:'Copper(II) Hydroxide'},
+  'Zn-OH': {formula:'Zn(OH)₂',name:'Zinc Hydroxide'},
+  'Na-SO4': {formula:'Na₂SO₄',name:'Sodium Sulphate'},
+  'K-SO4': {formula:'K₂SO₄',name:'Potassium Sulphate'},
+  'Ca-SO4': {formula:'CaSO₄',name:'Calcium Sulphate (Gypsum)'},
+  'Mg-SO4': {formula:'MgSO₄',name:'Magnesium Sulphate (Epsom Salt)'},
+  'Al-SO4': {formula:'Al₂(SO₄)₃',name:'Aluminium Sulphate'},
+  'Fe-SO4': {formula:'Fe₂(SO₄)₃',name:'Iron(III) Sulphate'},
+  'Cu-SO4': {formula:'CuSO₄',name:'Copper(II) Sulphate (Blue Vitriol)'},
+  'Zn-SO4': {formula:'ZnSO₄',name:'Zinc Sulphate'},
+  'Ba-SO4': {formula:'BaSO₄',name:'Barium Sulphate (Barite)'},
+  'Na-CO3': {formula:'Na₂CO₃',name:'Sodium Carbonate (Washing Soda)'},
+  'K-CO3': {formula:'K₂CO₃',name:'Potassium Carbonate'},
+  'Ca-CO3': {formula:'CaCO₃',name:'Calcium Carbonate (Limestone)'},
+  'Mg-CO3': {formula:'MgCO₃',name:'Magnesium Carbonate'},
+  'Na-NO3': {formula:'NaNO₃',name:'Sodium Nitrate (Saltpeter)'},
+  'K-NO3': {formula:'KNO₃',name:'Potassium Nitrate'},
+  'Ca-NO3': {formula:'Ca(NO₃)₂',name:'Calcium Nitrate'},
+  'Ag-NO3': {formula:'AgNO₃',name:'Silver Nitrate'},
+  'Na-PO4': {formula:'Na₃PO₄',name:'Sodium Phosphate'},
+  'Ca-PO4': {formula:'Ca₃(PO₄)₂',name:'Calcium Phosphate'},
+  'NH4-Cl': {formula:'NH₄Cl',name:'Ammonium Chloride (Sal Ammoniac)'},
+  'NH4-SO4': {formula:'(NH₄)₂SO₄',name:'Ammonium Sulphate'},
+  'NH4-NO3': {formula:'NH₄NO₃',name:'Ammonium Nitrate'},
+  'Na-MnO4': {formula:'NaMnO₄',name:'Sodium Permanganate'},
+  'K-MnO4': {formula:'KMnO₄',name:'Potassium Permanganate'},
+  'K-Cr2O7': {formula:'K₂Cr₂O₇',name:'Potassium Dichromate'},
+  'Na-Cr2O7': {formula:'Na₂Cr₂O₇',name:'Sodium Dichromate'},
+  'Na-CN': {formula:'NaCN',name:'Sodium Cyanide'},
+  'K-CN': {formula:'KCN',name:'Potassium Cyanide'},
+};
+
+function combinePolyatomic() {
+  if(!selectedIon || !selectedPolyEl) return;
+  const key1 = `${selectedPolyEl.sym}-${selectedIon.formula}`;
+  const key2 = `${selectedIon.formula}-${selectedPolyEl.sym}`;
+  const compound = POLY_COMPOUNDS[key1] || POLY_COMPOUNDS[key2] || generatePolyCompound(selectedPolyEl, selectedIon);
+
+  const result = document.getElementById('polyResult');
+  result.classList.add('show');
+
+  if(!compound) {
+    document.getElementById('polyFormula').textContent = '—';
+    document.getElementById('polyName').textContent = 'Compound not possible';
+    document.getElementById('polyBadge').innerHTML = '<span class="bond-type-badge impossible-badge">❌ Not Possible</span>';
+    return;
+  }
+
+  document.getElementById('polyFormula').innerHTML = compound.formula;
+  document.getElementById('polyName').textContent = compound.name;
+  document.getElementById('polyBadge').innerHTML = '<span class="bond-type-badge ionic-badge">⚡ Ionic Compound</span>';
+
+  drawPolyBond(selectedPolyEl, selectedIon, compound);
+}
+
+function generatePolyCompound(el, ion) {
+  if(el.valency === 0) return null;
+  const elV = el.valency;
+  const ionV = Math.abs(ion.charge);
+  const gcd = (a,b) => b?gcd(b,a%b):a;
+  const n1 = ionV/gcd(elV,ionV), n2 = elV/gcd(elV,ionV);
+
+  let formula, name;
+  if(ion.charge < 0) {
+    // metal cation + anion
+    const elPart = n1===1 ? el.sym : `${el.sym}${toSub(n1)}`;
+    const ionPart = n2===1 ? ion.sym : `(${ion.sym.replace(/[⁺⁻²³]/g,'')})${toSub(n2)}`;
+    formula = `${elPart}${ionPart}`;
+    name = `${el.name} ${ion.name.toLowerCase()}`;
+  } else {
+    // NH4+ cation + anion
+    const elPart = n2===1 ? el.sym : `${el.sym}${toSub(n2)}`;
+    const ionPart = n1===1 ? ion.sym.replace(/[⁺⁻²³]/g,'') : `(${ion.sym.replace(/[⁺⁻²³]/g,'')})${toSub(n1)}`;
+    formula = `${ionPart}${elPart}`;
+    name = `Ammonium ${anionName(el.sym)}`;
+  }
+  return {formula, name};
+}
+
+function drawPolyBond(el, ion, compound) {
+  const canvas = document.getElementById('polyBondCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = '#0d1421';
+  ctx.fillRect(0,0,w,h);
+
+  const cx = w/2, cy = h/2;
+
+  // Draw ion (left)
+  const ionColor = '#b794f4';
+  ctx.beginPath(); ctx.arc(cx-130,cy,55,0,Math.PI*2);
+  ctx.strokeStyle = ionColor; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle = ionColor+'22'; ctx.fill();
+  ctx.font='bold 18px JetBrains Mono,monospace'; ctx.fillStyle=ionColor;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(ion.sym, cx-130, cy-6);
+  ctx.font='10px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.fillText(ion.name, cx-130, cy+12);
+
+  // Arrow
+  ctx.strokeStyle='#f6ad55'; ctx.lineWidth=2; ctx.setLineDash([5,3]);
+  ctx.beginPath(); ctx.moveTo(cx-68,cy); ctx.lineTo(cx-12,cy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#f6ad55';
+  ctx.beginPath(); ctx.moveTo(cx-10,cy); ctx.lineTo(cx-18,cy-5); ctx.lineTo(cx-18,cy+5); ctx.fill();
+
+  // Draw element (right)
+  const elColor = CAT_COLOR[el.cat] || '#63b3ed';
+  ctx.beginPath(); ctx.arc(cx+130,cy,45,0,Math.PI*2);
+  ctx.strokeStyle=elColor; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle=elColor+'22'; ctx.fill();
+  ctx.font='bold 22px Space Grotesk,sans-serif'; ctx.fillStyle=elColor;
+  ctx.textBaseline='middle';
+  ctx.fillText(el.sym, cx+130, cy-5);
+  ctx.font='10px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.fillText(el.name, cx+130, cy+12);
+
+  ctx.font='bold 13px Space Grotesk,sans-serif'; ctx.fillStyle='#f6ad55';
+  ctx.fillText('Ionic Compound', cx, cy+70);
+  ctx.font='11px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.fillText(compound.formula, cx, cy+86);
+}
+
+// ===================== ORGANIC CHEMISTRY =====================
+let orgType = 'alkane';
+let orgCarbons = 2;
+
+function setOrgType(type, btn) {
+  orgType = type;
+  document.querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Clamp carbons for alkyne (min 2)
+  if(type==='alkyne' && orgCarbons < 2) {
+    orgCarbons = 2;
+    document.getElementById('carbonSlider').value = 2;
+  }
+  updateOrganic();
+}
+
+function updateOrganic() {
+  orgCarbons = parseInt(document.getElementById('carbonSlider').value);
+  document.getElementById('carbonCount').textContent = orgCarbons;
+  renderOrganic();
+}
+
+function getMolecularFormula(n, type) {
+  if(type==='alkane') return `C${n===1?'':toSub(n)}H${toSub(2*n+2)}`;
+  if(type==='alkene') {
+    if(n<2) return 'N/A';
+    return `C${n===1?'':toSub(n)}H${toSub(2*n)}`;
+  }
+  if(type==='alkyne') {
+    if(n<2) return 'N/A';
+    return `C${n===1?'':toSub(n)}H${toSub(2*n-2)}`;
+  }
+}
+
+const ALKANE_NAMES = ['','Meth','Eth','Prop','But','Pent','Hex','Hept','Oct','Non','Dec'];
+const ORG_SUFFIX = {alkane:'ane',alkene:'ene',alkyne:'yne'};
+
+function getIUPACName(n, type) {
+  if(n < 1) return 'N/A';
+  if(type!=='alkane' && n < 2) return 'N/A (need ≥ 2 carbons)';
+  return `${ALKANE_NAMES[n]}${ORG_SUFFIX[type]}`;
+}
+
+function renderOrganic() {
+  const n = orgCarbons;
+  const formula = getMolecularFormula(n, orgType);
+  const iupac = getIUPACName(n, orgType);
+  document.getElementById('organicFormula').innerHTML = formula;
+  document.getElementById('organicIupac').textContent = iupac;
+
+  const bondInfo = {
+    alkane: 'All C–C bonds are single bonds (σ bonds only). General formula: CₙH₂ₙ₊₂',
+    alkene: 'Contains one C=C double bond (1 σ + 1 π bond). General formula: CₙH₂ₙ',
+    alkyne: 'Contains one C≡C triple bond (1 σ + 2 π bonds). General formula: CₙH₂ₙ₋₂',
+  };
+  document.getElementById('bondTypeInfo').textContent = bondInfo[orgType];
+
+  drawOrganicStructure();
+}
+
+function drawOrganicStructure() {
+  const canvas = document.getElementById('organicCanvas');
+  const ctx = canvas.getContext('2d');
+  const n = orgCarbons;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#0d1421'; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if((orgType==='alkene'||orgType==='alkyne') && n < 2) {
+    ctx.font='14px Space Grotesk,sans-serif'; ctx.fillStyle='#fc8181';
+    ctx.textAlign='center'; ctx.fillText('Need at least 2 carbons', canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  const cw = canvas.width, ch = canvas.height;
+  const bondLen = Math.min(70, (cw-80)/Math.max(n,1));
+  const totalW = (n-1)*bondLen;
+  const startX = cw/2 - totalW/2;
+  const cy = ch/2;
+  const cRadius = 14;
+  const hRadius = 10;
+  const hOffset = 30;
+  const cColor = '#4fd1c5';
+  const hColor = '#f6ad55';
+  const bondColor = '#e2e8f0';
+  const doubleBondColor = '#63b3ed';
+  const tripleBondColor = '#b794f4';
+
+  const carbons = [];
+  for(let i=0; i<n; i++) carbons.push({x: startX + i*bondLen, y: cy});
+
+  // Draw bonds between carbons
+  for(let i=0; i<n-1; i++) {
+    const x1=carbons[i].x+cRadius, x2=carbons[i+1].x-cRadius;
+    if(orgType==='alkane') {
+      drawLine(ctx,x1,cy,x2,cy,bondColor,2.5);
+    } else if(orgType==='alkene') {
+      if(i===0) {
+        drawLine(ctx,x1,cy-4,x2,cy-4,doubleBondColor,2);
+        drawLine(ctx,x1,cy+4,x2,cy+4,doubleBondColor,2);
+      } else {
+        drawLine(ctx,x1,cy,x2,cy,bondColor,2.5);
+      }
+    } else if(orgType==='alkyne') {
+      if(i===0) {
+        drawLine(ctx,x1,cy-5,x2,cy-5,tripleBondColor,1.8);
+        drawLine(ctx,x1,cy,x2,cy,tripleBondColor,1.8);
+        drawLine(ctx,x1,cy+5,x2,cy+5,tripleBondColor,1.8);
+      } else {
+        drawLine(ctx,x1,cy,x2,cy,bondColor,2.5);
+      }
+    }
+  }
+
+  // Draw H atoms
+  carbons.forEach((c,i) => {
+    let hCount;
+    if(orgType==='alkane') hCount = i===0||i===n-1 ? 3 : 2;
+    else if(orgType==='alkene') {
+      if(i===0) hCount = n===2 ? 2 : 2;
+      else if(i===1 && n===2) hCount = 2;
+      else if(i===1 && n>2) hCount = 1;
+      else hCount = i===n-1 ? 3 : 2;
+    } else { // alkyne
+      if(i===0) hCount = n===2 ? 1 : 1;
+      else if(i===1 && n===2) hCount = 1;
+      else if(i===1 && n>2) hCount = 2;
+      else hCount = i===n-1 ? 3 : 2;
+    }
+
+    // Simplified: show 1 H above, 1 H below for middle carbons
+    // Terminal: show 1 above, 1 below, 1 to side
+    if(i===0) {
+      // Left terminal
+      drawHydrogen(ctx,c.x-hOffset-hRadius,cy,hColor,bondColor); // left
+      drawHydrogen(ctx,c.x,cy-hOffset,hColor,bondColor); // up
+      if(hCount>=3) drawHydrogen(ctx,c.x,cy+hOffset,hColor,bondColor); // down
+    } else if(i===n-1) {
+      // Right terminal
+      drawHydrogen(ctx,c.x+hOffset+hRadius,cy,hColor,bondColor); // right
+      drawHydrogen(ctx,c.x,cy-hOffset,hColor,bondColor); // up
+      if(hCount>=3) drawHydrogen(ctx,c.x,cy+hOffset,hColor,bondColor); // down
+    } else {
+      // Middle carbons
+      drawHydrogen(ctx,c.x,cy-hOffset,hColor,bondColor); // up
+      if(hCount>=2) drawHydrogen(ctx,c.x,cy+hOffset,hColor,bondColor); // down
+    }
+  });
+
+  // Draw carbon atoms on top
+  carbons.forEach((c,i) => {
+    ctx.beginPath(); ctx.arc(c.x,cy,cRadius,0,Math.PI*2);
+    ctx.fillStyle='#0d1421'; ctx.fill();
+    ctx.strokeStyle=cColor; ctx.lineWidth=2; ctx.stroke();
+    ctx.font='bold 12px JetBrains Mono,monospace'; ctx.fillStyle=cColor;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('C',c.x,cy);
+  });
+
+  // Bond label
+  ctx.font='12px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.textAlign='left';
+  ctx.fillText('C = Carbon    H = Hydrogen', 16, ch-14);
+}
+
+function drawLine(ctx,x1,y1,x2,y2,color,width=2) {
+  ctx.strokeStyle=color; ctx.lineWidth=width;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+}
+
+function drawHydrogen(ctx,x,y,hColor,bondColor) {
+  ctx.beginPath(); ctx.arc(x,y,10,0,Math.PI*2);
+  ctx.fillStyle='#0d1421'; ctx.fill();
+  ctx.strokeStyle=hColor; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.font='bold 10px JetBrains Mono,monospace'; ctx.fillStyle=hColor;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('H',x,y);
+}
+
+// ===================== SPECIAL STRUCTURES =====================
+const SPECIAL = {
+  benzene: {
+    title:'Benzene — C₆H₆',
+    desc:'Aromatic ring: 6 carbons in a hexagonal ring with alternating single/double bonds. The π electrons are delocalized over the entire ring.',
+    draw: drawBenzene
+  },
+  alcohol: {
+    title:'Alcohol — Hydroxyl Group (–OH)',
+    desc:'Example: Ethanol (CH₃–CH₂–OH). The –OH group makes it polar and gives it its characteristic properties.',
+    draw: drawAlcohol
+  },
+  carboxylic: {
+    title:'Carboxylic Acid — Carboxyl Group (–COOH)',
+    desc:'Example: Acetic acid (CH₃–COOH). The –COOH group: C double-bonded to O and single-bonded to –OH.',
+    draw: drawCarboxylic
+  },
+  aldehyde: {
+    title:'Aldehyde — (–CHO)',
+    desc:'Example: Ethanal (CH₃–CHO). Carbonyl group at the end of the chain. C is double-bonded to O and single-bonded to H.',
+    draw: drawAldehyde
+  },
+  ketone: {
+    title:'Ketone — Carbonyl Group (C=O)',
+    desc:'Example: Propanone / Acetone (CH₃–CO–CH₃). Carbonyl in the middle of the chain.',
+    draw: drawKetone
+  },
+  amine: {
+    title:'Amine — Amino Group (–NH₂)',
+    desc:'Example: Methylamine (CH₃–NH₂). The –NH₂ group: nitrogen bonded to 2 hydrogens.',
+    draw: drawAmine
+  },
+};
+
+function showSpecial(key) {
+  const s = SPECIAL[key];
+  document.getElementById('specialResult').style.display='block';
+  document.getElementById('specialTitle').textContent = s.title;
+  document.getElementById('specialDesc').textContent = s.desc;
+  const canvas = document.getElementById('specialCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#0d1421'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  s.draw(ctx, canvas.width, canvas.height);
+}
+
+function drawBenzene(ctx, w, h) {
+  const cx=w/2, cy=h/2, r=85, n=6;
+  const pts = [];
+  for(let i=0;i<n;i++) {
+    pts.push({x: cx+r*Math.cos(Math.PI/2+i*Math.PI*2/n), y: cy+r*Math.sin(Math.PI/2+i*Math.PI*2/n)});
+  }
+
+  // Outer single bonds (all sides for the hexagon)
+  for(let i=0;i<n;i++) {
+    const p1=pts[i], p2=pts[(i+1)%n];
+    if(i%2===0) {
+      // double bond lines
+      const dx=p2.y-p1.y, dy=p1.x-p2.x;
+      const len=Math.sqrt(dx*dx+dy*dy);
+      const off=5;
+      ctx.strokeStyle='#63b3ed'; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(p1.x+dx/len*off, p1.y+dy/len*off);
+      ctx.lineTo(p2.x+dx/len*off, p2.y+dy/len*off);
+      ctx.stroke();
+    }
+    ctx.strokeStyle='#4fd1c5'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+  }
+
+  // Delocalization circle
+  ctx.strokeStyle='rgba(99,179,237,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.arc(cx,cy,55,0,Math.PI*2); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Carbon atoms
+  pts.forEach((p,i) => {
+    ctx.beginPath(); ctx.arc(p.x,p.y,14,0,Math.PI*2);
+    ctx.fillStyle='#0d1421'; ctx.fill();
+    ctx.strokeStyle='#4fd1c5'; ctx.lineWidth=2; ctx.stroke();
+    ctx.font='bold 11px JetBrains Mono,monospace'; ctx.fillStyle='#4fd1c5';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('C',p.x,p.y);
+
+    // H atoms
+    const hx=cx+(r+38)*Math.cos(Math.PI/2+i*Math.PI*2/n);
+    const hy=cy+(r+38)*Math.sin(Math.PI/2+i*Math.PI*2/n);
+    ctx.strokeStyle='#f6ad55'; ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.moveTo(p.x+(hx-p.x)*0.5,p.y+(hy-p.y)*0.5);
+    ctx.lineTo(hx,hy);
+    ctx.stroke();
+    ctx.beginPath(); ctx.arc(hx,hy,10,0,Math.PI*2);
+    ctx.fillStyle='#0d1421'; ctx.fill();
+    ctx.strokeStyle='#f6ad55'; ctx.stroke();
+    ctx.font='bold 10px JetBrains Mono,monospace'; ctx.fillStyle='#f6ad55';
+    ctx.fillText('H',hx,hy);
+  });
+
+  ctx.font='13px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.textAlign='center';
+  ctx.fillText('Hexagonal ring with delocalized π electrons (Kekulé structure)', cx, h-16);
+}
+
+function drawAlcohol(ctx, w, h) {
+  const cy=h/2;
+  // CH3 — CH2 — OH
+  const atoms = [
+    {label:'CH₃',x:80,y:cy,color:'#4fd1c5'},
+    {label:'CH₂',x:220,y:cy,color:'#4fd1c5'},
+    {label:'O',x:360,y:cy,color:'#fc8181'},
+    {label:'H',x:460,y:cy,color:'#f6ad55'},
+  ];
+  drawLinearStructure(ctx, atoms, [1,1,1], w, h, 'Ethanol: CH₃–CH₂–OH');
+}
+
+function drawCarboxylic(ctx, w, h) {
+  const cy=h/2;
+  const atoms = [
+    {label:'CH₃',x:80,y:cy,color:'#4fd1c5'},
+    {label:'C',x:230,y:cy,color:'#4fd1c5'},
+    {label:'OH',x:370,y:cy,color:'#fc8181'},
+  ];
+  drawLinearStructure(ctx, atoms, [1,1], w, h, 'Acetic acid: CH₃–COOH');
+  // =O above the C
+  const ox=230, oy=cy-70;
+  ctx.strokeStyle='#fc8181'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(ox,cy-20); ctx.lineTo(ox,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox+5,cy-20); ctx.lineTo(ox+5,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(ox,oy,13,0,Math.PI*2);
+  ctx.fillStyle='#0d1421'; ctx.fill();
+  ctx.strokeStyle='#fc8181'; ctx.stroke();
+  ctx.font='bold 10px JetBrains Mono'; ctx.fillStyle='#fc8181';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('O',ox,oy);
+  ctx.font='11px Space Grotesk'; ctx.fillStyle='#8ba3bc';
+  ctx.textAlign='left';
+  ctx.fillText('C=O (double bond)', ox+20, oy-5);
+}
+
+function drawAldehyde(ctx, w, h) {
+  const cy=h/2;
+  const atoms = [
+    {label:'CH₃',x:80,y:cy,color:'#4fd1c5'},
+    {label:'C',x:230,y:cy,color:'#4fd1c5'},
+    {label:'H',x:340,y:cy,color:'#f6ad55'},
+  ];
+  drawLinearStructure(ctx, atoms, [1,1], w, h, 'Ethanal (Acetaldehyde): CH₃–CHO');
+  // =O above
+  const ox=230, oy=cy-70;
+  ctx.strokeStyle='#fc8181'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(ox,cy-20); ctx.lineTo(ox,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox+5,cy-20); ctx.lineTo(ox+5,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(ox,oy,13,0,Math.PI*2);
+  ctx.fillStyle='#0d1421'; ctx.fill();
+  ctx.strokeStyle='#fc8181'; ctx.stroke();
+  ctx.font='bold 10px JetBrains Mono'; ctx.fillStyle='#fc8181';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('O',ox,oy);
+}
+
+function drawKetone(ctx, w, h) {
+  const cy=h/2;
+  const atoms = [
+    {label:'CH₃',x:80,y:cy,color:'#4fd1c5'},
+    {label:'C',x:240,y:cy,color:'#4fd1c5'},
+    {label:'CH₃',x:400,y:cy,color:'#4fd1c5'},
+  ];
+  drawLinearStructure(ctx, atoms, [1,1], w, h, 'Propanone (Acetone): CH₃–CO–CH₃');
+  const ox=240, oy=cy-70;
+  ctx.strokeStyle='#fc8181'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(ox,cy-20); ctx.lineTo(ox,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox+5,cy-20); ctx.lineTo(ox+5,oy+10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(ox,oy,13,0,Math.PI*2);
+  ctx.fillStyle='#0d1421'; ctx.fill();
+  ctx.strokeStyle='#fc8181'; ctx.stroke();
+  ctx.font='bold 10px JetBrains Mono'; ctx.fillStyle='#fc8181';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('O',ox,oy);
+}
+
+function drawAmine(ctx, w, h) {
+  const cy=h/2;
+  const atoms = [
+    {label:'CH₃',x:80,y:cy,color:'#4fd1c5'},
+    {label:'N',x:230,y:cy,color:'#68d391'},
+    {label:'H',x:330,y:cy,color:'#f6ad55'},
+  ];
+  drawLinearStructure(ctx, atoms, [1,1], w, h, 'Methylamine: CH₃–NH₂');
+  // Second H below N
+  const nx=230, nhx=230, nhy=cy+70;
+  ctx.strokeStyle='#f6ad55'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(nx,cy+20); ctx.lineTo(nhx,nhy-10); ctx.stroke();
+  ctx.beginPath(); ctx.arc(nhx,nhy,10,0,Math.PI*2);
+  ctx.fillStyle='#0d1421'; ctx.fill();
+  ctx.strokeStyle='#f6ad55'; ctx.stroke();
+  ctx.font='bold 10px JetBrains Mono'; ctx.fillStyle='#f6ad55';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('H',nhx,nhy);
+}
+
+function drawLinearStructure(ctx, atoms, bonds, w, h, label) {
+  for(let i=0;i<bonds.length;i++) {
+    const a1=atoms[i], a2=atoms[i+1];
+    ctx.strokeStyle='#e2e8f0'; ctx.lineWidth=2.5;
+    if(bonds[i]===1) {
+      ctx.beginPath(); ctx.moveTo(a1.x+20,a1.y); ctx.lineTo(a2.x-20,a2.y); ctx.stroke();
+    } else if(bonds[i]===2) {
+      ctx.beginPath(); ctx.moveTo(a1.x+20,a1.y-4); ctx.lineTo(a2.x-20,a2.y-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(a1.x+20,a1.y+4); ctx.lineTo(a2.x-20,a2.y+4); ctx.stroke();
+    }
+  }
+  atoms.forEach(a => {
+    ctx.beginPath(); ctx.arc(a.x,a.y,22,0,Math.PI*2);
+    ctx.fillStyle='#0d1421'; ctx.fill();
+    ctx.strokeStyle=a.color; ctx.lineWidth=2; ctx.stroke();
+    ctx.font='bold 13px JetBrains Mono,monospace'; ctx.fillStyle=a.color;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(a.label,a.x,a.y);
+  });
+  ctx.font='13px Space Grotesk,sans-serif'; ctx.fillStyle='#8ba3bc';
+  ctx.textAlign='center';
+  ctx.fillText(label, w/2, h-18);
+}
+
+// ===================== NAV =====================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  document.querySelector(`.nav-tab[onclick="showSection('${id}')"]`).classList.add('active');
+
+  if(id==='combine' && !document.getElementById('combineGrid').children.length) buildCombineGrid();
+  if(id==='polyatomic') { buildPolyGrid(); buildPolyElemGrid(); }
+  if(id==='organic') updateOrganic();
+}
+
+// ===================== INIT =====================
+buildPeriodicGrid('periodicGrid', false);
+buildImportantGrid();
+
+// Show first element by default
+setTimeout(() => {
+  const firstCell = document.querySelector('#periodicGrid .element-cell:not(.placeholder)');
+  if(firstCell) firstCell.click();
+},100);
+
+// ===================== CHEM-RIZZ AI — FULLY OFFLINE =====================
+
+// ── KNOWLEDGE BASE ──────────────────────────────────────────────────────────
+const KB = [
+
+  // ── STRUCTURE OF ATOM ──
+  { keys:['bohr model','bohr\'s model','bohr atomic','niels bohr'],
+    ans:`<strong style="color:var(--accent)">Bohr's Model of the Atom</strong>
+
+<strong>Postulates:</strong>
+★ Electrons revolve around the nucleus in fixed circular paths called <em>orbits</em> or <em>shells</em> (n = 1, 2, 3…).
+★ As long as an electron stays in a fixed orbit, it neither gains nor loses energy → called <em>stationary states</em>.
+★ Energy is emitted or absorbed only when an electron jumps from one orbit to another.
+★ The angular momentum of an electron is quantized: <strong>mvr = nh/2π</strong>
+
+<strong>Key Formulae:</strong>
+• Radius of nth orbit: rₙ = 0.529 × n²/Z Å
+• Energy of nth orbit: Eₙ = −13.6 × Z²/n² eV
+• Velocity: vₙ = 2.18×10⁶ × Z/n m/s
+
+<strong>Merits:</strong> Explained H-atom spectrum, stability of atoms.
+
+<strong>Limitations:</strong> Fails for multi-electron atoms; ignores wave nature of electron; couldn't explain fine spectra or Zeeman/Stark effect.
+
+⚠️ <em>Exam tip:</em> For H-atom (Z=1): E₁ = −13.6 eV, E₂ = −3.4 eV, E₃ = −1.51 eV. Remember these!` },
+
+  { keys:['quantum number','principal quantum','azimuthal','magnetic quantum','spin quantum'],
+    ans:`<strong style="color:var(--accent)">Quantum Numbers — All Four Types</strong>
+
+<strong>1. Principal Quantum Number (n)</strong>
+★ Describes the shell/energy level
+★ Values: n = 1, 2, 3, 4… (K, L, M, N shells)
+★ Max electrons in shell = 2n²
+
+<strong>2. Azimuthal / Angular Momentum Quantum Number (l)</strong>
+★ Describes the subshell (shape of orbital)
+★ Values: l = 0 to (n−1)
+  • l=0 → s orbital (spherical)
+  • l=1 → p orbital (dumbbell)
+  • l=2 → d orbital (double dumbbell)
+  • l=3 → f orbital (complex)
+
+<strong>3. Magnetic Quantum Number (mₗ)</strong>
+★ Describes orientation of orbital in space
+★ Values: −l to +l (total 2l+1 values)
+★ Example: l=1 → mₗ = −1, 0, +1 (3 orientations = 3 p orbitals)
+
+<strong>4. Spin Quantum Number (mₛ)</strong>
+★ Describes spin of electron
+★ Values: +½ (spin up ↑) or −½ (spin down ↓)
+
+⚠️ <em>Exam tip:</em> No two electrons in an atom can have all four quantum numbers identical (Pauli Exclusion Principle).` },
+
+  { keys:['aufbau principle','aufbau','filling orbitals','orbital filling order'],
+    ans:`<strong style="color:var(--accent)">Aufbau Principle</strong>
+
+<strong>Statement:</strong> Electrons fill orbitals in order of increasing energy — lowest energy orbitals are filled first.
+
+<strong>Energy order (n+l rule):</strong>
+1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p…
+
+<strong>n+l Rule:</strong> Lower (n+l) = lower energy. If (n+l) is equal, lower n is filled first.
+
+<strong>Example — Iron (Fe, Z=26):</strong>
+1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶
+
+<strong>Exceptions to remember:</strong>
+• Cr (Z=24): [Ar] 3d⁵ 4s¹ (not 3d⁴ 4s²) — half-filled d is stable
+• Cu (Z=29): [Ar] 3d¹⁰ 4s¹ (not 3d⁹ 4s²) — fully-filled d is stable
+
+⚠️ <em>Exam tip:</em> Always write electron configurations starting from 1s. Half-filled and fully-filled subshells have extra stability.` },
+
+  { keys:["hund's rule","hund rule","maximum multiplicity"],
+    ans:`<strong style="color:var(--accent)">Hund's Rule of Maximum Multiplicity</strong>
+
+<strong>Statement:</strong> Electrons are distributed among orbitals of the same subshell to give the maximum number of unpaired electrons, and all unpaired electrons have the same spin.
+
+<strong>In simple words:</strong> Every orbital in a subshell must be singly occupied before any pairing occurs.
+
+<strong>Example — Nitrogen (Z=7): 1s² 2s² 2p³</strong>
+The 3 electrons in 2p occupy 3 separate orbitals:
+  2px↑  2py↑  2pz↑  ← correct (3 unpaired)
+  2px↑↓ 2py↑  2pz   ← wrong (pairing before filling)
+
+<strong>Why?</strong> Electrons repel each other → spreading out minimizes repulsion → lower energy.
+
+<strong>Importance:</strong> Determines magnetic properties — more unpaired = more paramagnetic.
+
+⚠️ <em>Exam tip:</em> Elements with unpaired electrons are paramagnetic; all paired = diamagnetic.` },
+
+  { keys:["pauli exclusion","pauli's exclusion","no two electrons"],
+    ans:`<strong style="color:var(--accent)">Pauli Exclusion Principle</strong>
+
+<strong>Statement:</strong> No two electrons in an atom can have the same set of all four quantum numbers.
+
+<strong>Consequence:</strong> An orbital can hold a maximum of 2 electrons, and they must have opposite spins (+½ and −½).
+
+<strong>Max electrons per subshell:</strong>
+• s (1 orbital) → max 2 electrons
+• p (3 orbitals) → max 6 electrons
+• d (5 orbitals) → max 10 electrons
+• f (7 orbitals) → max 14 electrons
+
+<strong>Max electrons per shell:</strong> 2n²
+  • n=1: 2 | n=2: 8 | n=3: 18 | n=4: 32
+
+⚠️ <em>Exam tip:</em> This principle is the basis for the capacity of shells and subshells.` },
+
+  { keys:['de broglie','wave nature','dual nature','wave particle'],
+    ans:`<strong style="color:var(--accent)">de Broglie's Wave-Particle Duality</strong>
+
+<strong>Hypothesis (1924):</strong> All matter in motion has wave-like properties.
+
+<strong>de Broglie equation:</strong> λ = h/mv = h/p
+  where: λ = wavelength, h = Planck's constant (6.626×10⁻³⁴ J·s), m = mass, v = velocity, p = momentum
+
+<strong>For an electron in nth Bohr orbit:</strong>
+2πr = nλ (circumference = whole number of wavelengths)
+
+<strong>Heisenberg's Uncertainty Principle:</strong>
+Δx × Δp ≥ h/4π
+It is impossible to know exact position AND momentum simultaneously.
+
+⚠️ <em>Exam tip:</em> de Broglie wavelength is significant only for microscopic particles (electrons), not macroscopic objects (cricket ball has negligible λ).` },
+
+  // ── PERIODIC TABLE & TRENDS ──
+  { keys:['periodic trend','ionization energy','electron affinity','electronegativity','atomic radius','periodic law'],
+    ans:`<strong style="color:var(--accent)">Periodic Trends in Properties</strong>
+
+<strong>1. Atomic Radius</strong>
+★ Across period (L→R): Decreases (nuclear charge ↑, electrons pulled closer)
+★ Down group: Increases (new shells added)
+★ Order: Na > Mg > Al > Si > P > S > Cl
+
+<strong>2. Ionization Energy (IE)</strong>
+★ Energy to remove outermost electron from gaseous atom
+★ Across period: Increases (more nuclear pull)
+★ Down group: Decreases (electrons farther from nucleus)
+★ Exceptions: Be > B (2s vs 2p) and N > O (half-filled 2p extra stable)
+
+<strong>3. Electron Affinity (EA)</strong>
+★ Energy released when electron is added to neutral atom
+★ Across period: Generally increases
+★ Cl has higher EA than F (due to small size of F causing repulsion)
+
+<strong>4. Electronegativity</strong>
+★ Tendency to attract shared electrons in a bond
+★ Across period: Increases | Down group: Decreases
+★ Most electronegative: F (3.98) | Least: Cs (0.79)
+
+⚠️ <em>Exam tip:</em> Memorize: IE order anomalies — Be>B and N>O are common exam questions!` },
+
+  { keys:['modern periodic law','mendeleev','periodic table history','periodic classification'],
+    ans:`<strong style="color:var(--accent)">Classification of Elements & Periodic Law</strong>
+
+<strong>Döbereiner's Triads (1829):</strong> Groups of 3 elements; middle element's atomic mass ≈ average of other two.
+Example: Li(7), Na(23), K(39) → (7+39)/2 = 23 ✓
+
+<strong>Newlands' Octaves (1866):</strong> Every 8th element has similar properties. Failed for heavier elements.
+
+<strong>Mendeleev's Periodic Law (1869):</strong> Properties of elements are periodic functions of their atomic masses.
+★ Predicted missing elements (Eka-aluminium = Gallium)
+★ Limitation: Couldn't explain H position, isotopes, anomalies (Ar/K)
+
+<strong>Modern Periodic Law (Moseley, 1913):</strong>
+★ Properties are periodic functions of atomic number (Z)
+★ 118 elements; 7 periods; 18 groups
+
+<strong>Blocks:</strong>
+• s-block: Groups 1–2 (alkali + alkaline earth metals)
+• p-block: Groups 13–18 (non-metals, metalloids, noble gases)
+• d-block: Groups 3–12 (transition metals)
+• f-block: Lanthanides (58–71) + Actinides (90–103)` },
+
+  // ── CHEMICAL BONDING ──
+  { keys:['ionic bond','ionic bonding','electrovalent','nacl bond','sodium chloride bond'],
+    ans:`<strong style="color:var(--accent)">Ionic (Electrovalent) Bond</strong>
+
+<strong>Definition:</strong> Bond formed by complete transfer of electrons from one atom to another, resulting in oppositely charged ions held together by electrostatic attraction.
+
+<strong>Formation:</strong> Metal (low IE) + Non-metal (high EA) → Ionic compound
+Example: Na + Cl → Na⁺Cl⁻ (NaCl)
+  Na: 2,8,1 → Na⁺: 2,8 (loses 1e⁻)
+  Cl: 2,8,7 → Cl⁻: 2,8,8 (gains 1e⁻)
+
+<strong>Properties of Ionic Compounds:</strong>
+★ High melting & boiling points
+★ Conduct electricity in molten state or aqueous solution
+★ Soluble in polar solvents (water)
+★ Crystalline solids at room temperature
+★ Hard but brittle
+
+<strong>Lattice Energy:</strong> Energy released when gaseous ions form 1 mole of ionic solid. Higher lattice energy = more stable ionic compound.
+
+⚠️ <em>Exam tip:</em> Ionic bond forms between elements with large electronegativity difference (>1.7).` },
+
+  { keys:['covalent bond','covalent bonding','electron sharing','sigma bond','pi bond'],
+    ans:`<strong style="color:var(--accent)">Covalent Bond</strong>
+
+<strong>Definition:</strong> Bond formed by mutual sharing of electron pairs between atoms of similar or equal electronegativity.
+
+<strong>Types:</strong>
+★ Single bond: 1 shared pair, 1 sigma (σ) bond (e.g., H–H, H–Cl)
+★ Double bond: 2 shared pairs, 1σ + 1π bond (e.g., O=O, C=C)
+★ Triple bond: 3 shared pairs, 1σ + 2π bonds (e.g., N≡N, C≡C)
+
+<strong>σ (Sigma) Bond:</strong> Head-on/axial overlap of orbitals. Stronger. Free rotation allowed.
+
+<strong>π (Pi) Bond:</strong> Lateral/sideways overlap. Weaker. Restricts rotation.
+
+<strong>Properties of Covalent Compounds:</strong>
+★ Low melting & boiling points (weak intermolecular forces)
+★ Poor conductors of electricity
+★ Soluble in non-polar solvents
+★ Exist as gases, liquids, or soft solids
+
+<strong>Coordinate/Dative Bond:</strong> Both electrons donated by one atom. Example: NH₃ + H⁺ → NH₄⁺
+
+⚠️ <em>Exam tip:</em> Remember: all bonds have σ first; extra bonds are π. A double bond = 1σ+1π, triple bond = 1σ+2π.` },
+
+  { keys:['vsepr','vsepr theory','molecular shape','molecular geometry','linear bent tetrahedral'],
+    ans:`<strong style="color:var(--accent)">VSEPR Theory — Molecular Shapes</strong>
+
+<strong>VSEPR = Valence Shell Electron Pair Repulsion Theory</strong>
+★ Electron pairs (bonding + lone pairs) around central atom repel each other.
+★ Molecule adopts shape that minimizes repulsion.
+★ Lone pair-lone pair > lone pair-bond pair > bond pair-bond pair repulsion
+
+<strong>Common Shapes (11th PU):</strong>
+
+| Molecule | BP | LP | Shape | Bond Angle |
+|---|---|---|---|---|
+| BeCl₂ | 2 | 0 | Linear | 180° |
+| BF₃ | 3 | 0 | Trigonal planar | 120° |
+| CH₄ | 4 | 0 | Tetrahedral | 109.5° |
+| NH₃ | 3 | 1 | Trigonal pyramidal | 107° |
+| H₂O | 2 | 2 | Bent/V-shaped | 104.5° |
+| PCl₅ | 5 | 0 | Trigonal bipyramidal | 90°,120° |
+| SF₆ | 6 | 0 | Octahedral | 90° |
+
+⚠️ <em>Exam tip:</em> Each lone pair reduces bond angle by ~2.5°. NH₃ has 1 LP so angle decreases from 109.5°→107°. H₂O has 2 LP so 109.5°→104.5°.` },
+
+  { keys:['hybridization','sp3','sp2','sp hybrid','hybrid orbital'],
+    ans:`<strong style="color:var(--accent)">Hybridization</strong>
+
+<strong>Definition:</strong> Mixing of atomic orbitals of slightly different energies to form new orbitals (hybrid orbitals) of equal energy and shape.
+
+<strong>Types of Hybridization:</strong>
+
+<strong>sp hybridization:</strong>
+★ 1 s + 1 p → 2 sp orbitals
+★ Linear shape, bond angle 180°
+★ Examples: BeCl₂, CO₂, C₂H₂ (acetylene)
+
+<strong>sp² hybridization:</strong>
+★ 1 s + 2 p → 3 sp² orbitals
+★ Trigonal planar, bond angle 120°
+★ Examples: BF₃, SO₃, C₂H₄ (ethylene), benzene
+
+<strong>sp³ hybridization:</strong>
+★ 1 s + 3 p → 4 sp³ orbitals
+★ Tetrahedral, bond angle 109.5°
+★ Examples: CH₄, NH₃ (sp³ with 1 LP), H₂O (sp³ with 2 LP), CCl₄
+
+<strong>sp³d hybridization:</strong> PCl₅ → Trigonal bipyramidal
+<strong>sp³d² hybridization:</strong> SF₆ → Octahedral
+
+⚠️ <em>Exam tip:</em> Formula: Hybridization = ½(V + M − C + A) where V=valence e⁻, M=monovalent atoms, C=cation charge, A=anion charge.` },
+
+  { keys:['hydrogen bond','h-bond','intermolecular force','van der waals','dipole'],
+    ans:`<strong style="color:var(--accent)">Intermolecular Forces</strong>
+
+<strong>1. Hydrogen Bond</strong>
+★ Attractive force between δ⁺ H of one molecule and electronegative atom (N, O, F) of another.
+★ Types:
+  • Intermolecular H-bond: between different molecules (e.g., H₂O, HF, alcohols)
+  • Intramolecular H-bond: within same molecule (e.g., o-nitrophenol, salicylaldehyde)
+★ Reason for high BP of H₂O (100°C vs expected −80°C)
+
+<strong>2. Van der Waals Forces</strong>
+a) London Dispersion Forces: temporary dipoles; present in all molecules; weakest
+b) Dipole-Dipole Interactions: between polar molecules (e.g., HCl, SO₂)
+c) Dipole-Induced Dipole: polar molecule induces dipole in non-polar molecule
+
+<strong>Strength order:</strong> Ion-ion > Ion-dipole > Dipole-dipole > H-bond > London forces
+
+⚠️ <em>Exam tip:</em> Ice is less dense than water because H-bonds in ice form open hexagonal structure. This is why ice floats!` },
+
+  // ── STATES OF MATTER ──
+  { keys:['gas law','boyle','charles','gay-lussac','ideal gas','avogadro law','pv=nrt'],
+    ans:`<strong style="color:var(--accent)">Gas Laws</strong>
+
+<strong>Boyle's Law (constant T, n):</strong>
+P ∝ 1/V → PV = constant
+P₁V₁ = P₂V₂
+
+<strong>Charles' Law (constant P, n):</strong>
+V ∝ T → V/T = constant
+V₁/T₁ = V₂/T₂ (T in Kelvin!)
+
+<strong>Gay-Lussac's Law (constant V, n):</strong>
+P ∝ T → P₁/T₁ = P₂/T₂
+
+<strong>Avogadro's Law (constant T, P):</strong>
+V ∝ n → equal volumes of gases at same T, P contain equal molecules.
+
+<strong>Ideal Gas Equation:</strong>
+<strong>PV = nRT</strong>
+R = 8.314 J mol⁻¹ K⁻¹ = 0.0821 L atm mol⁻¹ K⁻¹
+At STP (0°C, 1 atm): 1 mole ideal gas = 22.4 L
+
+<strong>Combined Gas Law:</strong>
+P₁V₁/T₁ = P₂V₂/T₂
+
+⚠️ <em>Exam tip:</em> Always convert °C to Kelvin: T(K) = T(°C) + 273. STP conditions: 0°C and 1 atm.` },
+
+  { keys:['kinetic theory','kinetic molecular','rms velocity','maxwell','urms','effusion','graham'],
+    ans:`<strong style="color:var(--accent)">Kinetic Theory of Gases</strong>
+
+<strong>Postulates:</strong>
+★ Gas = large number of tiny molecules in constant random motion
+★ Molecular collisions are perfectly elastic
+★ No intermolecular forces (ideal gas)
+★ Average KE ∝ absolute temperature
+
+<strong>Velocities of Gas Molecules:</strong>
+• u_rms = √(3RT/M) — root mean square velocity
+• u_avg = √(8RT/πM) — average velocity
+• u_mp = √(2RT/M) — most probable velocity
+Order: u_rms > u_avg > u_mp
+
+<strong>Kinetic Energy:</strong>
+Average KE per molecule = (3/2)kT
+Average KE per mole = (3/2)RT
+
+<strong>Graham's Law of Effusion:</strong>
+r₁/r₂ = √(M₂/M₁)
+Lighter gas effuses faster.
+
+<strong>Real Gases — van der Waals equation:</strong>
+(P + an²/V²)(V − nb) = nRT
+a = intermolecular attraction; b = volume of molecules` },
+
+  // ── THERMODYNAMICS ──
+  { keys:['thermodynamics','enthalpy','entropy','gibbs','hess law','first law','second law','internal energy'],
+    ans:`<strong style="color:var(--accent)">Chemical Thermodynamics</strong>
+
+<strong>System & Surroundings:</strong> System = part under study; Surroundings = rest of universe
+
+<strong>First Law of Thermodynamics:</strong>
+ΔU = q + w (energy is conserved)
+w = −PΔV (work done by gas)
+
+<strong>Enthalpy (H):</strong>
+H = U + PV
+ΔH = ΔU + ΔnᵍRT (at constant P)
+• ΔH < 0 → Exothermic | ΔH > 0 → Endothermic
+
+<strong>Hess's Law:</strong> ΔH for a reaction = sum of ΔH of individual steps (path-independent).
+
+<strong>Entropy (S):</strong>
+★ Measure of disorder/randomness
+★ ΔS > 0 → more disordered
+★ Second Law: Total entropy of universe always increases (ΔS_universe > 0)
+
+<strong>Gibbs Free Energy:</strong>
+<strong>ΔG = ΔH − TΔS</strong>
+• ΔG < 0 → Spontaneous reaction
+• ΔG = 0 → Equilibrium
+• ΔG > 0 → Non-spontaneous
+
+| ΔH | ΔS | ΔG | Spontaneity |
+|---|---|---|---|
+| − | + | Always − | Always spontaneous |
+| + | − | Always + | Never spontaneous |
+| − | − | Depends on T | Spontaneous at low T |
+| + | + | Depends on T | Spontaneous at high T |` },
+
+  // ── EQUILIBRIUM ──
+  { keys:['equilibrium','le chatelier','kc','kp','equilibrium constant','buffer','ph','solubility product','ksp'],
+    ans:`<strong style="color:var(--accent)">Chemical Equilibrium</strong>
+
+<strong>Dynamic Equilibrium:</strong> Rate of forward reaction = Rate of reverse reaction. Concentrations remain constant.
+
+<strong>Equilibrium Constants:</strong>
+For: aA + bB ⇌ cC + dD
+Kc = [C]^c [D]^d / [A]^a [B]^b
+Kp = Kc(RT)^Δn, where Δn = moles of gaseous products − reactants
+
+<strong>Le Chatelier's Principle:</strong>
+If equilibrium is disturbed, system shifts to oppose the change.
+★ Increase concentration of reactant → shifts forward
+★ Increase pressure → shifts toward fewer moles of gas
+★ Increase temperature → shifts toward endothermic side
+★ Catalyst → does NOT shift equilibrium, only speeds up reaching it
+
+<strong>pH Scale:</strong>
+pH = −log[H⁺]; pOH = −log[OH⁻]; pH + pOH = 14 (at 25°C)
+• pH < 7 → acidic | pH = 7 → neutral | pH > 7 → basic
+
+<strong>Buffer Solution:</strong>
+Resists change in pH. Types:
+• Acidic buffer: weak acid + its salt (e.g., CH₃COOH + CH₃COONa)
+• Basic buffer: weak base + its salt (e.g., NH₄OH + NH₄Cl)
+
+<strong>Ksp (Solubility Product):</strong>
+For AgCl(s) ⇌ Ag⁺ + Cl⁻: Ksp = [Ag⁺][Cl⁻]` },
+
+  // ── REDOX ──
+  { keys:['redox','oxidation state','oxidation number','half reaction','balancing redox','oxidizing agent','reducing agent'],
+    ans:`<strong style="color:var(--accent)">Redox Reactions</strong>
+
+<strong>Key Definitions:</strong>
+★ Oxidation: loss of electrons / increase in oxidation state (OIL)
+★ Reduction: gain of electrons / decrease in oxidation state (RIG)
+★ OIL RIG → Oxidation Is Loss, Reduction Is Gain
+★ Oxidizing agent: gets reduced (gains electrons)
+★ Reducing agent: gets oxidized (loses electrons)
+
+<strong>Rules for Oxidation State:</strong>
+1. Pure element → 0
+2. Monatomic ion → equals charge
+3. H is +1 (except metal hydrides: −1)
+4. O is −2 (except peroxides: −1, OF₂: +2)
+5. Sum of oxidation states = charge of species
+
+<strong>Balancing by Half-Reaction Method:</strong>
+Step 1: Separate into oxidation & reduction half-reactions
+Step 2: Balance atoms (except H & O)
+Step 3: Balance O by adding H₂O
+Step 4: Balance H by adding H⁺ (acidic) or OH⁻ (basic)
+Step 5: Balance charge by adding electrons
+Step 6: Equalize electrons; add half-reactions
+
+⚠️ <em>Exam tip:</em> In KMnO₄, Mn is in +7 state. In K₂Cr₂O₇, Cr is in +6 state. Very common exam question!` },
+
+  // ── ORGANIC CHEMISTRY ──
+  { keys:['iupac','iupac name','nomenclature','organic naming','functional group'],
+    ans:`<strong style="color:var(--accent)">IUPAC Nomenclature — Organic Chemistry</strong>
+
+<strong>Steps for IUPAC Naming:</strong>
+1. Identify longest carbon chain (parent chain → gives prefix)
+2. Identify principal functional group (suffix)
+3. Number chain from end nearest to principal group (or lowest locants)
+4. Name substituents with position numbers
+
+<strong>Chain Prefixes:</strong>
+1C=Meth | 2C=Eth | 3C=Prop | 4C=But | 5C=Pent | 6C=Hex | 7C=Hept | 8C=Oct | 9C=Non | 10C=Dec
+
+<strong>Suffixes (functional groups):</strong>
+-ane (alkane) | -ene (alkene) | -yne (alkyne) | -ol (alcohol) | -al (aldehyde) | -one (ketone) | -oic acid (carboxylic acid) | -amine (amine)
+
+<strong>Priority Order:</strong>
+COOH > SO₃H > CHO > C=O > OH > NH₂ > alkene > alkyne
+
+<strong>Example:</strong>
+CH₃−CH(OH)−CH₂−CH₃ → 2-butanol
+CH₃−CH₂−CHO → propanal
+CH₃−CO−CH₃ → propan-2-one (acetone)
+
+⚠️ <em>Exam tip:</em> When two functional groups present, higher priority group gets the suffix; lower gets a prefix (e.g., hydroxy-, oxo-, amino-).` },
+
+  { keys:['alkane','methane','ethane','propane','butane','saturated hydrocarbon'],
+    ans:`<strong style="color:var(--accent)">Alkanes (Saturated Hydrocarbons)</strong>
+
+<strong>General Formula:</strong> CₙH₂ₙ₊₂
+
+<strong>Homologous Series:</strong>
+• Methane: CH₄ | Ethane: C₂H₆ | Propane: C₃H₈ | Butane: C₄H₁₀ | Pentane: C₅H₁₂
+
+<strong>Hybridization:</strong> All carbon atoms → sp³, tetrahedral, bond angle 109.5°
+
+<strong>Preparation:</strong>
+★ From alkyl halides + Zn + dilute HCl (reduction)
+★ Wurtz reaction: 2RX + 2Na → R−R + 2NaX
+★ From unsaturated compounds (hydrogenation): R−CH=CH₂ + H₂ →(Ni/Pt/Pd)→ R−CH₂−CH₃
+
+<strong>Chemical Properties:</strong>
+★ Combustion: CH₄ + 2O₂ → CO₂ + 2H₂O (complete)
+★ Halogenation (free radical): CH₄ + Cl₂ →(hν)→ CH₃Cl + HCl
+  Mechanism: Initiation → Propagation → Termination
+
+<strong>Physical Properties:</strong>
+• C₁–C₄: gases | C₅–C₁₇: liquids | C₁₈+: solids at room temp` },
+
+  { keys:['alkene','ethene','ethylene','propene','unsaturated','addition reaction','markovnikov'],
+    ans:`<strong style="color:var(--accent)">Alkenes (Unsaturated Hydrocarbons — C=C)</strong>
+
+<strong>General Formula:</strong> CₙH₂ₙ
+
+<strong>Examples:</strong> Ethene C₂H₄ | Propene C₃H₆ | Butene C₄H₈
+
+<strong>Hybridization:</strong> C atoms in C=C → sp², trigonal planar, 120°. Contains 1σ + 1π bond.
+
+<strong>Preparation:</strong>
+★ Dehydration of alcohol: C₂H₅OH →(H₂SO₄/170°C)→ CH₂=CH₂ + H₂O
+★ Dehydrohalogenation: CH₃CH₂Br + KOH(alc) → CH₂=CH₂ + KBr + H₂O
+
+<strong>Chemical Reactions (Electrophilic Addition):</strong>
+★ Hydrogenation: CH₂=CH₂ + H₂ →(Ni)→ CH₃−CH₃
+★ Halogenation: CH₂=CH₂ + Br₂ → CH₂Br−CH₂Br (decolourises bromine water — test for alkene!)
+★ Hydrohalogenation (Markovnikov's rule): CH₃−CH=CH₂ + HBr → CH₃−CHBr−CH₃ (major)
+  <em>Markovnikov's Rule:</em> H adds to C with more H atoms (anti-Markovnikov with peroxides)
+★ Hydration: CH₂=CH₂ + H₂O →(H₂SO₄)→ C₂H₅OH
+
+⚠️ <em>Exam tip:</em> Bromine water test: alkene decolourises Br₂/CCl₄ (orange → colourless).` },
+
+  { keys:['alkyne','acetylene','ethyne','triple bond','propyne'],
+    ans:`<strong style="color:var(--accent)">Alkynes (C≡C Triple Bond)</strong>
+
+<strong>General Formula:</strong> CₙH₂ₙ₋₂
+
+<strong>Examples:</strong> Ethyne (acetylene) C₂H₂ | Propyne C₃H₄
+
+<strong>Hybridization:</strong> C atoms in C≡C → sp, linear, 180°. Contains 1σ + 2π bonds.
+
+<strong>Preparation:</strong>
+★ CaC₂ + 2H₂O → C₂H₂ + Ca(OH)₂ (calcium carbide method)
+★ Dehydrohalogenation of vicinal dihalides (2 moles KOH/alc)
+
+<strong>Chemical Reactions:</strong>
+★ Hydrogenation: HC≡CH + 2H₂ → CH₃−CH₃
+★ Halogenation: HC≡CH + 2Br₂ → CHBr₂−CHBr₂
+★ Hydrohalogenation: HC≡CH + HBr → CH₂=CHBr (then + HBr → CH₃CHBr₂)
+
+<strong>Acidic Nature of Terminal Alkynes:</strong>
+HC≡CH + NaNH₂ → HC≡C⁻Na⁺ + NH₃ (sodium acetylide)
+Terminal alkynes give white ppt with ammoniacal AgNO₃ → used as test.
+
+<strong>Uses:</strong> Acetylene (C₂H₂) used in oxy-acetylene welding (3000°C flame)` },
+
+  { keys:['benzene','aromatic','resonance benzene','kekule','electrophilic aromatic'],
+    ans:`<strong style="color:var(--accent)">Benzene & Aromatic Hydrocarbons</strong>
+
+<strong>Benzene: C₆H₆</strong>
+★ Kékulé structure: alternating single and double bonds in a hexagonal ring
+★ Actually, all C−C bonds are equivalent (bond length = 1.40 Å, between single 1.54Å and double 1.34Å)
+★ Explained by resonance — two equivalent Kékulé structures
+
+<strong>Hybridization:</strong> Each C is sp², forms planar ring. The 6 unhybridized p orbitals overlap to form a delocalized π electron cloud above and below the ring.
+
+<strong>Hückel's Rule:</strong> Aromatic if planar, cyclic, and has (4n+2) π electrons
+Benzene: 6 π electrons (n=1) ✓ → aromatic
+
+<strong>Reactions (Electrophilic Aromatic Substitution):</strong>
+★ Nitration: C₆H₆ + HNO₃ →(H₂SO₄)→ C₆H₅NO₂ + H₂O (nitrobenzene)
+★ Sulphonation: C₆H₆ + H₂SO₄ → C₆H₅SO₃H + H₂O
+★ Halogenation: C₆H₆ + Cl₂ →(FeCl₃)→ C₆H₅Cl + HCl (chlorobenzene)
+★ Friedel-Crafts Alkylation: C₆H₆ + RCl →(AlCl₃)→ C₆H₅R + HCl
+
+⚠️ <em>Exam tip:</em> Benzene undergoes substitution (not addition) to preserve aromaticity.` },
+
+  { keys:['isomerism','structural isomer','stereoisomer','chain isomer','position isomer','geometrical isomer','optical isomer','cis trans'],
+    ans:`<strong style="color:var(--accent)">Isomerism in Organic Chemistry</strong>
+
+<strong>Isomers:</strong> Compounds with same molecular formula but different arrangement of atoms.
+
+<strong>A. Structural Isomerism</strong>
+
+1. <strong>Chain isomerism:</strong> Different carbon skeleton
+   C₄H₁₀: butane (straight) vs isobutane (branched)
+
+2. <strong>Position isomerism:</strong> Different position of functional group
+   1-propanol (CH₃CH₂CH₂OH) vs 2-propanol (CH₃CHOHCH₃)
+
+3. <strong>Functional group isomerism:</strong> Different functional groups
+   C₂H₆O: ethanol (alcohol) vs dimethyl ether (ether)
+
+4. <strong>Metamerism:</strong> Different alkyl groups on same functional group
+   Diethyl ether vs methyl propyl ether
+
+<strong>B. Stereoisomerism</strong>
+
+1. <strong>Geometrical (cis-trans) isomerism:</strong> Restricted rotation around C=C
+   Requires: 2 different groups on each C of double bond
+   cis = same groups on same side | trans = on opposite sides
+
+2. <strong>Optical isomerism:</strong> Non-superimposable mirror images (chiral molecules)
+   Requires: chiral carbon (4 different groups attached)
+   Enantiomers rotate plane polarized light in opposite directions.` },
+
+  // ── HYDROGEN ──
+  { keys:['hydrogen','dihydrogen','isotope hydrogen','heavy water','hydrogen peroxide','h2o2'],
+    ans:`<strong style="color:var(--accent)">Hydrogen — The Simplest Element</strong>
+
+<strong>Position in Periodic Table:</strong>
+Placed in Group 1 (like alkali metals) but also resembles halogens (Group 17). Unique element!
+
+<strong>Isotopes:</strong>
+★ Protium (¹H): Z=1, A=1 (99.985%)
+★ Deuterium (²H or D): Z=1, A=2 (0.015%)
+★ Tritium (³H or T): Z=1, A=3 (radioactive, trace amount)
+D₂O = Heavy water (used in nuclear reactors as moderator)
+
+<strong>Preparation of H₂:</strong>
+★ Electrolysis of water: 2H₂O → 2H₂ + O₂
+★ Steam reforming: CH₄ + H₂O →(Ni, 1270K)→ CO + 3H₂
+★ Water-gas shift: CO + H₂O ⇌ CO₂ + H₂
+
+<strong>Hydrogen Peroxide (H₂O₂):</strong>
+★ Pale blue liquid, strong oxidizer
+★ Preparation: BaO₂ + H₂SO₄ → BaSO₄ + H₂O₂
+★ Uses: Bleaching, antiseptic (3% solution = antiseptic), rocket fuel (90%)
+★ Oxidation state of O in H₂O₂ = −1` },
+
+  // ── s-BLOCK ──
+  { keys:['s block','alkali metal','alkaline earth','sodium','potassium','calcium','magnesium','group 1','group 2'],
+    ans:`<strong style="color:var(--accent)">s-Block Elements</strong>
+
+<strong>Group 1 — Alkali Metals (Li, Na, K, Rb, Cs, Fr):</strong>
+★ Configuration: ns¹ | Valency: +1
+★ Softest metals; low density; low melting point
+★ React vigorously with water: 2Na + 2H₂O → 2NaOH + H₂↑
+★ React with O₂: Li→ Li₂O (oxide), Na→ Na₂O₂ (peroxide), K→ KO₂ (superoxide)
+★ Flame colours: Li=red, Na=yellow, K=violet, Cs=blue
+
+<strong>Group 2 — Alkaline Earth Metals (Be, Mg, Ca, Sr, Ba, Ra):</strong>
+★ Configuration: ns² | Valency: +2
+★ Harder than Group 1; higher MP and density
+★ Ca + 2H₂O → Ca(OH)₂ + H₂↑
+★ Flame colours: Ca=brick red, Sr=crimson, Ba=apple green
+
+<strong>Important Compounds:</strong>
+★ NaOH (caustic soda): Made by chlor-alkali process (electrolysis of brine)
+★ Na₂CO₃ (washing soda): Na₂CO₃·10H₂O
+★ CaO (quicklime): CaCO₃ →(Δ)→ CaO + CO₂
+★ Ca(OH)₂ (slaked lime): CaO + H₂O → Ca(OH)₂
+
+⚠️ <em>Exam tip:</em> Be & Mg don't impart colour to flame (too high ionization energy).` },
+
+  // ── p-BLOCK ──
+  { keys:['p block','group 13','group 14','boron','aluminium','carbon','silicon','diagonal relationship'],
+    ans:`<strong style="color:var(--accent)">p-Block Elements (Groups 13 & 14)</strong>
+
+<strong>Group 13 (Boron Family): B, Al, Ga, In, Tl</strong>
+★ Config: ns²np¹ | Valency: +3
+★ B is metalloid; rest are metals
+★ Al is most abundant metal in earth's crust
+★ Al₂O₃ (alumina) is amphoteric: reacts with both acid & base
+★ Diagonal relationship: B resembles Si (both form covalent compounds, amphoteric oxides)
+
+<strong>Boron compounds:</strong>
+★ Borax: Na₂B₄O₇·10H₂O → used in glass, antiseptic (borax bead test)
+★ Boric acid: H₃BO₃ — weak monobasic acid
+★ Diborane: B₂H₆ — electron-deficient compound (3-centre 2-electron bonds)
+
+<strong>Group 14 (Carbon Family): C, Si, Ge, Sn, Pb</strong>
+★ Config: ns²np² | Valency: +4 (or +2 for heavier elements)
+★ C forms the most compounds (organic chemistry!)
+★ Catenation: ability to form chains — C has highest catenation ability
+★ Carbon allotropes: Diamond (sp³, hardest), Graphite (sp², electrical conductor), Fullerene (C₆₀)
+★ SiO₂ (quartz): covalent giant molecule | CO₂: gas (molecular)
+★ CO: poisonous gas (binds to haemoglobin)
+★ CO₂: greenhouse gas` },
+
+  // ── ENVIRONMENTAL CHEMISTRY ──
+  { keys:['environmental chemistry','pollution','smog','ozone','greenhouse','acid rain','global warming'],
+    ans:`<strong style="color:var(--accent)">Environmental Chemistry</strong>
+
+<strong>Air Pollution:</strong>
+★ Classical smog (London type): SO₂ + smoke + fog in cold, humid conditions (reducing type)
+★ Photochemical smog (LA type): NOₓ + hydrocarbons + sunlight → O₃, PAN (oxidizing type)
+  PAN = Peroxyacyl Nitrate — causes eye irritation, crop damage
+
+<strong>Ozone Layer Depletion:</strong>
+★ Ozone (O₃) in stratosphere (15–50 km) absorbs harmful UV-B radiation
+★ CFCs (chlorofluorocarbons) → release Cl radicals → destroy O₃
+★ Cl• + O₃ → ClO• + O₂ (chain reaction)
+★ Effects: skin cancer, cataracts, affects immune system
+
+<strong>Greenhouse Effect & Global Warming:</strong>
+★ Greenhouse gases: CO₂, CH₄, N₂O, CFCs, H₂O vapour
+★ Trap IR radiation → Earth warms up
+★ Effects: melting ice caps, rising sea levels, climate change
+
+<strong>Water Pollution:</strong>
+★ BOD (Biochemical Oxygen Demand): measure of organic pollution — higher BOD = more polluted
+★ DO (Dissolved Oxygen): healthy water needs DO > 6 ppm
+
+<strong>Acid Rain:</strong> pH < 5.6, caused by SO₂ and NOₓ from fossil fuels
+SO₂ + H₂O → H₂SO₃ | 2NO₂ + H₂O → HNO₃ + HNO₂` },
+  // ---- MOLE CONCEPT ----
+  { keys:['mole concept','molar mass','avogadro number','molarity','molality','stoichiometry','empirical formula'],
+    ans:`<strong style="color:var(--accent)">Mole Concept & Stoichiometry</strong>
+
+<strong>Mole:</strong> 1 mole = 6.022×10²³ particles (Avogadro's number, Nₐ)
+
+<strong>Molar Mass:</strong> Mass of 1 mole of substance in grams
+★ 1 mole of H₂O = 18 g | 1 mole of NaCl = 58.5 g | 1 mole of CO₂ = 44 g
+
+<strong>Number of moles = mass(g) / molar mass</strong>
+Number of particles = moles × Nₐ
+
+<strong>Molarity (M):</strong> moles of solute per litre of solution
+M = n/V(L) | M₁V₁ = M₂V₂ (dilution)
+
+<strong>Molality (m):</strong> moles of solute per kg of solvent
+m = n/W(kg)
+
+<strong>Empirical Formula:</strong> Simplest whole number ratio of atoms
+<strong>Molecular Formula:</strong> Actual number of atoms
+Molecular formula = n × Empirical formula, where n = M/Empirical formula mass
+
+<strong>Limiting Reagent:</strong> Reagent that is completely consumed first; determines amount of product.
+
+⚠️ <em>Exam tip:</em> Steps to find empirical formula:
+1. Find % by mass → 2. Divide by atomic mass → 3. Divide by smallest → 4. Round to whole numbers` },
+  // ---- FALLBACK ----
+  { keys:['hello','hi','hey','namaste','good morning','good evening'],
+    ans:`Hey there! 👋 I'm <strong style="color:var(--accent)">Chem-Rizz</strong>, your offline 11th PU Chemistry tutor! 🔬
+
+Tiny chemistry rizz first: your question already has more activation energy than half the class. Now let's make the answer neat.
+
+I work <strong>completely offline</strong> — no internet, API, or outside AI needed. I focus only on <strong style="color:var(--accent2);">11th PU Chemistry</strong>, NCERT-aligned basics, and JEE-level concepts that connect directly to 11th PU Chemistry.
+
+Ask me about atomic structure, periodic trends, bonding, mole concept, gases, thermodynamics, equilibrium, redox, hydrogen, s-block, p-block basics, organic fundamentals, hydrocarbons, or environmental chemistry.` }
+];
+
+// ── OFFLINE SEARCH ENGINE ──────────────────────────────────────────────────
+function offlineSearch(query) {
+  const q = query.toLowerCase();
+
+  // Score each chemistry KB entry
+  let best = null, bestScore = 0;
+  for (const entry of KB) {
+    let score = 0;
+    for (const k of entry.keys) {
+      if (q.includes(k)) score += k.length * 2;
+      else {
+        const words = k.split(' ');
+        for (const w of words) {
+          if (w.length > 3 && q.includes(w)) score += w.length;
+        }
+      }
+    }
+    if (score > bestScore) { bestScore = score; best = entry; }
+  }
+
+  if (bestScore > 3 && best) return addChemRizz(best.ans);
+
+  const offTopicWords = ['physics','force','velocity','acceleration','projectile','newton','gravitation','current','voltage','resistance','math','maths','matrix','determinant','integral','derivative','trigonometry','probability','permutation','combination','complex number','sets'];
+  if (offTopicWords.some(w => q.includes(w))) {
+    return `Chemistry has the spotlight here, and honestly it wears the lab coat well. 🧪<br><br>
+I can help with <strong>11th PU Chemistry</strong> and JEE-linked chemistry concepts, but I do not answer pure Physics, Maths, or unrelated topics in this chat.<br><br>
+Try asking something like <strong>hybridization of NH3</strong>, <strong>mole concept numericals</strong>, <strong>periodic trends</strong>, <strong>chemical equilibrium</strong>, or <strong>IUPAC naming</strong>.`;
+  }
+
+  const chemWords = ['atom','element','bond','reaction','compound','orbital','molecule','acid','base','salt','metal','organic','carbon','oxygen','hydrogen','nitrogen','electron','proton','neutron','valency','mole','ph','buffer','catalyst','equilibrium','enthalpy','entropy','periodic','alkane','alkene','alkyne','benzene','isomer','polymer','redox','oxidation','reduction','hybridization','vsepr','gas','thermodynamics','s block','p block','stoichiometry','iupac','hydrocarbon'];
+  const looksChem = chemWords.some(w => q.includes(w));
+
+  if (looksChem) return addChemRizz(generateChemistryAnswer(query));
+
+  return `Nice curiosity, but give me one chemistry keyword so I can lock onto the exact concept. 🔬<br><br>
+I'm built for <strong>11th PU Chemistry</strong> plus JEE-linked Class 11 chemistry topics. Try asking about atomic structure, chemical bonding, mole concept, gas laws, thermodynamics, equilibrium, redox, s-block, p-block, organic basics, hydrocarbons, or environmental chemistry.<br><br>
+<em>Example:</em> “Explain VSEPR theory with examples” or “Solve a mole concept problem step by step.”`;
+}
+
+function addChemRizz(answer) {
+  const openers = [
+    'Clean question — this one has proper lab-coat energy. 🧪',
+    'Good pick. This concept is a small chapter flex if you explain it neatly. ✨',
+    'Nice, this is exactly the kind of chemistry teachers like to see answered clearly. 🔬',
+    'Sharp question. Let’s make it simple enough to remember and correct enough for exams.'
+  ];
+  const opener = openers[Math.floor(Math.random() * openers.length)];
+  return `<strong style="color:var(--accent2);">${opener}</strong><br><br>${answer}`;
+}
+
+function generateChemistryAnswer(query) {
+  return `<strong style="color:var(--accent)">Chemistry Answer Framework</strong>
+
+I don't have that exact wording stored, but I can still guide it in a reliable 11th PU/JEE-linked chemistry way:
+
+<strong>1. Identify the chapter:</strong> Connect the question to atomic structure, periodicity, bonding, mole concept, states of matter, thermodynamics, equilibrium, redox, inorganic basics, organic basics, hydrocarbons, or environmental chemistry.
+
+<strong>2. Write the core idea:</strong> Define the term first, then add the rule/formula and one standard example. Chemistry answers impress when the definition and example sit together.
+
+<strong>3. Add exam logic:</strong> Mention the reason behind the trend or result — effective nuclear charge, stability, electron configuration, bond polarity, steric effect, resonance, enthalpy/entropy, or equilibrium shift depending on the topic.
+
+<strong>4. Finish with a clean line:</strong> State the final conclusion clearly so it reads like a board-answer ending.
+
+Ask the same question with one key term like <strong>ionic bond</strong>, <strong>hybridization</strong>, <strong>mole concept</strong>, <strong>redox</strong>, <strong>equilibrium</strong>, or <strong>IUPAC</strong>, and I’ll give the full direct answer.`;
+}
+
+// ---- CHAT ENGINE ----
+let chemRizzHistory = [];
+
+function chemRizzQuick(q) {
+  document.getElementById('chemRizzInput').value = q;
+  sendChemRizz();
+}
+
+function clearChemRizz() {
+  chemRizzHistory = [];
+  const box = document.getElementById('chemRizzMessages');
+  box.innerHTML = `<div style="
+    background: linear-gradient(135deg, rgba(99,179,237,0.08), rgba(79,209,197,0.05));
+    border: 1px solid var(--border);
+    border-radius: 14px 14px 14px 4px;
+    padding: 1rem 1.2rem;
+    max-width: 85%; font-size:0.9rem; line-height:1.7; color:var(--text);
+  ">
+    <strong style="color:var(--accent);">Chem-Rizz 🧪</strong><br><br>
+    Chat cleared! Ready for your next chemistry question from 11th PU or JEE-linked Class 11 topics 🔬<br>
+    <span style="color:var(--green);font-size:0.8rem;">● Offline mode — no internet needed</span>
+  </div>`;
+}
+
+function appendChemMsg(role, html) {
+  const box = document.getElementById('chemRizzMessages');
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.className = 'chem-rizz-msg';
+  div.style.cssText = `display:flex; justify-content:${isUser ? 'flex-end' : 'flex-start'};`;
+  div.innerHTML = `<div style="
+    background: ${isUser
+      ? 'linear-gradient(135deg, var(--accent), var(--accent2))'
+      : 'var(--card2)'};
+    color: ${isUser ? '#0a0e1a' : 'var(--text)'};
+    border: 1px solid ${isUser ? 'transparent' : 'var(--border)'};
+    border-radius: ${isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px'};
+    padding: 0.75rem 1.1rem;
+    max-width: 82%;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    font-family: 'Space Grotesk', sans-serif;
+    white-space: pre-wrap;
+    word-break: break-word;
+  ">${html}</div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const box = document.getElementById('chemRizzMessages');
+  const div = document.createElement('div');
+  div.id = 'chemRizzTyping';
+  div.style.cssText = 'display:flex;align-items:center;gap:5px;padding:0.5rem 0;';
+  div.innerHTML = `<div style="
+    background:var(--card2); border:1px solid var(--border);
+    border-radius:14px 14px 14px 4px; padding:0.7rem 1rem;
+    display:flex; align-items:center; gap:5px;
+  ">
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span style="font-size:0.75rem;color:var(--muted);margin-left:4px;">Chem-Rizz is thinking...</span>
+  </div>`;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('chemRizzTyping');
+  if (t) t.remove();
+}
+
+function sendChemRizz() {
+  const input = document.getElementById('chemRizzInput');
+  const sendBtn = document.getElementById('chemRizzSendBtn');
+  const userMsg = input.value.trim();
+  if (!userMsg) return;
+
+  input.value = '';
+  input.style.height = '48px';
+  sendBtn.disabled = true;
+  sendBtn.textContent = '...';
+
+  appendChemMsg('user', userMsg);
+  chemRizzHistory.push({ role: 'user', content: userMsg });
+
+  showTyping();
+
+  // Simulate a tiny "thinking" delay for UX
+  setTimeout(() => {
+    removeTyping();
+    const reply = offlineSearch(userMsg);
+    chemRizzHistory.push({ role: 'assistant', content: reply });
+    appendChemMsg('assistant', reply);
+    sendBtn.disabled = false;
+    sendBtn.textContent = '➤ Send';
+  }, 420);
+}
+</script>
+
+<!-- ===================== CHEM-RIZZ PROBLEM SOLVER ===================== -->
+<script>
+// ── TOPIC CONFIG ──────────────────────────────────────────────────────────
+const SOLVER_TOPICS = {
+  bohr_radius: {
+    title: 'Bohr Radius & Energy of nth Orbit',
+    formulae: 'rₙ = 0.529 × n²/Z  Å\nEₙ = −13.6 × Z²/n²  eV\nvₙ = 2.18×10⁶ × Z/n  m/s',
+    fields: [
+      {id:'n', label:'Principal Quantum Number n', placeholder:'e.g. 2', unit:''},
+      {id:'Z', label:'Atomic Number Z', placeholder:'e.g. 1 for H, 2 for He', unit:''},
+    ],
+    solve(v) {
+      const n = parseFloat(v.n), Z = parseFloat(v.Z);
+      if(isNaN(n)||isNaN(Z)||n<=0||Z<=0) return err('n and Z must be positive numbers.');
+      const r = 0.529 * n*n / Z;
+      const E = -13.6 * Z*Z / (n*n);
+      const vel = 2.18e6 * Z / n;
+      return steps([
+        `<b>Given:</b> n = ${n}, Z = ${Z}`,
+        `<b>Step 1 — Radius:</b><br>rₙ = 0.529 × n²/Z = 0.529 × ${n}² / ${Z}<br>rₙ = 0.529 × ${n*n} / ${Z} = <b>${r.toFixed(4)} Å</b>`,
+        `<b>Step 2 — Energy:</b><br>Eₙ = −13.6 × Z²/n² = −13.6 × ${Z*Z} / ${n*n}<br>Eₙ = <b>${E.toFixed(4)} eV</b>`,
+        `<b>Step 3 — Velocity:</b><br>vₙ = 2.18×10⁶ × Z/n = 2.18×10⁶ × ${Z}/${n}<br>vₙ = <b>${vel.toExponential(3)} m/s</b>`,
+        `<b>✅ Summary:</b> r = ${r.toFixed(4)} Å | E = ${E.toFixed(4)} eV | v = ${vel.toExponential(3)} m/s`,
+      ]);
+    }
+  },
+
+  de_broglie: {
+    title: 'de Broglie Wavelength',
+    formulae: 'λ = h/mv = h/p\nh = 6.626×10⁻³⁴ J·s\nFor electron: λ = 12.27/√V  Å  (V = accelerating voltage)',
+    fields: [
+      {id:'type', label:'Calculate for', placeholder:'', unit:'', type:'select', options:['Mass & Velocity','Accelerating Voltage (electron)']},
+      {id:'m', label:'Mass (kg)', placeholder:'e.g. 9.11e-31 for electron', unit:'kg'},
+      {id:'v', label:'Velocity (m/s)', placeholder:'e.g. 1e6', unit:'m/s'},
+      {id:'V', label:'Accelerating Voltage (V) — if electron', placeholder:'e.g. 100', unit:'V'},
+    ],
+    solve(v) {
+      const h = 6.626e-34;
+      const type = v.type;
+      if(type && type.includes('Voltage')) {
+        const V = parseFloat(v.V);
+        if(isNaN(V)||V<=0) return err('Enter a valid voltage.');
+        const lam = 12.27 / Math.sqrt(V);
+        return steps([
+          `<b>Given:</b> Accelerating Voltage V = ${V} V`,
+          `<b>Formula (for electron):</b> λ = 12.27/√V Å`,
+          `<b>Step 1:</b> √V = √${V} = ${Math.sqrt(V).toFixed(4)}`,
+          `<b>Step 2:</b> λ = 12.27 / ${Math.sqrt(V).toFixed(4)} = <b>${lam.toFixed(4)} Å</b>`,
+          `<b>✅ de Broglie wavelength = ${lam.toFixed(4)} Å = ${(lam*1e-10).toExponential(3)} m</b>`,
+        ]);
+      } else {
+        const m = parseFloat(v.m), vel = parseFloat(v.v);
+        if(isNaN(m)||isNaN(vel)||m<=0||vel<=0) return err('Enter valid mass and velocity.');
+        const lam = h/(m*vel);
+        return steps([
+          `<b>Given:</b> mass m = ${m} kg, velocity v = ${vel} m/s`,
+          `<b>Formula:</b> λ = h/mv`,
+          `<b>Step 1:</b> mv = ${m} × ${vel} = ${(m*vel).toExponential(3)} kg·m/s`,
+          `<b>Step 2:</b> λ = 6.626×10⁻³⁴ / ${(m*vel).toExponential(3)}`,
+          `<b>λ = <span style="color:var(--accent2)">${lam.toExponential(4)} m</span></b>`,
+          `<b>✅ de Broglie wavelength = ${lam.toExponential(4)} m</b>`,
+        ]);
+      }
+    }
+  },
+
+  rydberg: {
+    title: 'Spectral Lines — Rydberg Formula',
+    formulae: '1/λ = R_H × Z² × (1/n₁² − 1/n₂²)\nR_H = 1.097×10⁷ m⁻¹\nSeries: Lyman(n₁=1), Balmer(n₁=2), Paschen(n₁=3), Brackett(n₁=4)',
+    fields: [
+      {id:'Z', label:'Atomic Number Z', placeholder:'1 for H', unit:''},
+      {id:'n1', label:'n₁ (lower level)', placeholder:'e.g. 2 for Balmer', unit:''},
+      {id:'n2', label:'n₂ (upper level)', placeholder:'must be > n₁', unit:''},
+    ],
+    solve(v) {
+      const Z=parseFloat(v.Z), n1=parseFloat(v.n1), n2=parseFloat(v.n2);
+      if(isNaN(Z)||isNaN(n1)||isNaN(n2)||n2<=n1||n1<1) return err('Ensure n₂ > n₁ ≥ 1 and Z ≥ 1.');
+      const RH = 1.097e7;
+      const inv_lam = RH * Z*Z * (1/(n1*n1) - 1/(n2*n2));
+      const lam = 1/inv_lam;
+      const lam_nm = lam*1e9;
+      const E_eV = 13.6*Z*Z*(1/(n1*n1) - 1/(n2*n2));
+      const series = {1:'Lyman (UV)',2:'Balmer (Visible)',3:'Paschen (IR)',4:'Brackett (IR)'};
+      return steps([
+        `<b>Given:</b> Z=${Z}, n₁=${n1}, n₂=${n2}`,
+        `<b>Series:</b> ${series[n1]||'Higher series (IR)'}`,
+        `<b>Step 1 — Rydberg:</b><br>1/λ = R_H × Z² × (1/n₁² − 1/n₂²)<br>1/λ = 1.097×10⁷ × ${Z*Z} × (1/${n1*n1} − 1/${n2*n2})<br>1/λ = 1.097×10⁷ × ${Z*Z} × ${(1/(n1*n1) - 1/(n2*n2)).toFixed(6)}<br>1/λ = ${inv_lam.toExponential(4)} m⁻¹`,
+        `<b>Step 2 — Wavelength:</b><br>λ = 1/${inv_lam.toExponential(4)} = <b>${lam.toExponential(4)} m = ${lam_nm.toFixed(2)} nm</b>`,
+        `<b>Step 3 — Energy:</b><br>ΔE = 13.6 × Z² × (1/n₁² − 1/n₂²) = <b>${E_eV.toFixed(4)} eV</b>`,
+        `<b>✅ λ = ${lam_nm.toFixed(2)} nm | ΔE = ${E_eV.toFixed(4)} eV</b>`,
+      ]);
+    }
+  },
+
+  moles_mass: {
+    title: 'Moles ↔ Mass ↔ Particles',
+    formulae: 'n = mass(g) / Molar Mass(g/mol)\nParticles = n × 6.022×10²³\nVolume at STP = n × 22.4 L',
+    fields: [
+      {id:'given', label:'Given quantity type', placeholder:'', unit:'', type:'select', options:['Mass (g) → find moles','Moles → find mass & particles','Particles → find moles']},
+      {id:'value', label:'Value', placeholder:'e.g. 36', unit:''},
+      {id:'MM', label:'Molar Mass (g/mol)', placeholder:'e.g. 18 for H₂O', unit:'g/mol'},
+    ],
+    solve(v) {
+      const val=parseFloat(v.value), MM=parseFloat(v.MM);
+      if(isNaN(val)||isNaN(MM)||MM<=0||val<=0) return err('Enter valid positive values.');
+      const NA=6.022e23;
+      if(v.given&&v.given.startsWith('Mass')) {
+        const n=val/MM;
+        return steps([
+          `<b>Given:</b> mass = ${val} g, Molar mass = ${MM} g/mol`,
+          `<b>Formula:</b> n = mass / Molar mass`,
+          `<b>Step 1:</b> n = ${val} / ${MM} = <b>${n.toFixed(4)} mol</b>`,
+          `<b>Step 2 — Particles:</b> N = n × Nₐ = ${n.toFixed(4)} × 6.022×10²³ = <b>${(n*NA).toExponential(4)}</b>`,
+          `<b>Step 3 — Volume at STP:</b> V = n × 22.4 = <b>${(n*22.4).toFixed(4)} L</b>`,
+          `<b>✅ Moles = ${n.toFixed(4)} | Particles = ${(n*NA).toExponential(3)} | Volume at STP = ${(n*22.4).toFixed(3)} L</b>`,
+        ]);
+      } else if(v.given&&v.given.startsWith('Moles')) {
+        const mass=val*MM;
+        return steps([
+          `<b>Given:</b> n = ${val} mol, Molar mass = ${MM} g/mol`,
+          `<b>Step 1 — Mass:</b> mass = n × MM = ${val} × ${MM} = <b>${mass.toFixed(4)} g</b>`,
+          `<b>Step 2 — Particles:</b> N = ${val} × 6.022×10²³ = <b>${(val*NA).toExponential(4)}</b>`,
+          `<b>Step 3 — Volume at STP:</b> V = ${val} × 22.4 = <b>${(val*22.4).toFixed(3)} L</b>`,
+          `<b>✅ Mass = ${mass.toFixed(4)} g | Particles = ${(val*NA).toExponential(3)}</b>`,
+        ]);
+      } else {
+        const n=val/NA;
+        const mass=n*MM;
+        return steps([
+          `<b>Given:</b> Particles = ${val.toExponential(3)}, Molar mass = ${MM} g/mol`,
+          `<b>Step 1 — Moles:</b> n = N/Nₐ = ${val.toExponential(3)} / 6.022×10²³ = <b>${n.toExponential(4)} mol</b>`,
+          `<b>Step 2 — Mass:</b> mass = n × MM = ${n.toExponential(4)} × ${MM} = <b>${mass.toExponential(4)} g</b>`,
+          `<b>✅ n = ${n.toExponential(4)} mol | mass = ${mass.toExponential(4)} g</b>`,
+        ]);
+      }
+    }
+  },
+
+  molarity: {
+    title: 'Molarity & Dilution',
+    formulae: 'M = moles of solute / Volume of solution (L)\nM₁V₁ = M₂V₂  (dilution)\nmoles = M × V(L)',
+    fields: [
+      {id:'type', label:'Problem type', placeholder:'', unit:'', type:'select', options:['Find Molarity','Find moles from M and V','Dilution (M₁V₁=M₂V₂)']},
+      {id:'n', label:'Moles of solute (n)', placeholder:'e.g. 0.5', unit:'mol'},
+      {id:'V', label:'Volume of solution (L)', placeholder:'e.g. 2', unit:'L'},
+      {id:'M1', label:'Initial Molarity M₁', placeholder:'e.g. 6', unit:'M'},
+      {id:'V1', label:'Initial Volume V₁ (L)', placeholder:'e.g. 0.5', unit:'L'},
+      {id:'M2', label:'Final Molarity M₂', placeholder:'e.g. 1', unit:'M'},
+      {id:'V2', label:'Final Volume V₂ (L)', placeholder:'leave blank to find', unit:'L'},
+    ],
+    solve(v) {
+      if(v.type&&v.type.startsWith('Find Molarity')) {
+        const n=parseFloat(v.n), V=parseFloat(v.V);
+        if(isNaN(n)||isNaN(V)||V<=0) return err('Enter valid moles and volume.');
+        const M=n/V;
+        return steps([
+          `<b>Given:</b> n = ${n} mol, V = ${V} L`,
+          `<b>Formula:</b> M = n/V`,
+          `<b>M = ${n} / ${V} = <b style="color:var(--accent2)">${M.toFixed(4)} mol/L (M)</b>`,
+          `<b>✅ Molarity = ${M.toFixed(4)} M</b>`,
+        ]);
+      } else if(v.type&&v.type.startsWith('Find moles')) {
+        const M=parseFloat(v.M1), V=parseFloat(v.V);
+        if(isNaN(M)||isNaN(V)) return err('Enter M₁ as molarity and V as volume.');
+        const n=M*V;
+        return steps([
+          `<b>Given:</b> M = ${M} mol/L, V = ${V} L`,
+          `<b>n = M × V = ${M} × ${V} = <b style="color:var(--accent2)">${n.toFixed(4)} mol</b>`,
+          `<b>✅ Moles = ${n.toFixed(4)} mol</b>`,
+        ]);
+      } else {
+        const M1=parseFloat(v.M1),V1=parseFloat(v.V1),M2=parseFloat(v.M2);
+        let V2=parseFloat(v.V2);
+        if(isNaN(V2)||v.V2===''||v.V2===undefined) {
+          if(isNaN(M1)||isNaN(V1)||isNaN(M2)) return err('Enter M₁, V₁, and M₂ to find V₂.');
+          V2=M1*V1/M2;
+          return steps([
+            `<b>Given:</b> M₁=${M1} M, V₁=${V1} L, M₂=${M2} M`,
+            `<b>Formula:</b> M₁V₁ = M₂V₂`,
+            `<b>Step:</b> V₂ = M₁V₁/M₂ = (${M1}×${V1})/${M2} = <b>${V2.toFixed(4)} L</b>`,
+            `<b>✅ Final volume V₂ = ${V2.toFixed(4)} L</b>`,
+          ]);
+        } else {
+          if(isNaN(M1)||isNaN(V1)||isNaN(V2)) return err('Enter M₁, V₁, V₂ to find M₂.');
+          const M2calc=M1*V1/V2;
+          return steps([
+            `<b>Given:</b> M₁=${M1} M, V₁=${V1} L, V₂=${V2} L`,
+            `<b>Formula:</b> M₁V₁ = M₂V₂ → M₂ = M₁V₁/V₂`,
+            `<b>M₂ = (${M1}×${V1})/${V2} = <b>${M2calc.toFixed(4)} M</b>`,
+            `<b>✅ Final molarity M₂ = ${M2calc.toFixed(4)} M</b>`,
+          ]);
+        }
+      }
+    }
+  },
+
+  empirical: {
+    title: 'Empirical & Molecular Formula',
+    formulae: 'Step 1: % → divide by At. Mass → molar ratio\nStep 2: Divide by smallest\nStep 3: Round to whole numbers\nMolecular formula = n × Empirical, where n = M_mol / M_emp',
+    fields: [
+      {id:'pC', label:'% Carbon (C)', placeholder:'e.g. 40', unit:'%'},
+      {id:'pH', label:'% Hydrogen (H)', placeholder:'e.g. 6.67', unit:'%'},
+      {id:'pO', label:'% Oxygen (O)', placeholder:'e.g. 53.33 (or 0)', unit:'%'},
+      {id:'pN', label:'% Nitrogen (N)', placeholder:'e.g. 0', unit:'%'},
+      {id:'MM', label:'Molecular Mass (for mol. formula)', placeholder:'e.g. 180', unit:'g/mol'},
+    ],
+    solve(v) {
+      const elems = [
+        {sym:'C', at:12, pct:parseFloat(v.pC)||0},
+        {sym:'H', at:1,  pct:parseFloat(v.pH)||0},
+        {sym:'O', at:16, pct:parseFloat(v.pO)||0},
+        {sym:'N', at:14, pct:parseFloat(v.pN)||0},
+      ].filter(e=>e.pct>0);
+      if(!elems.length) return err('Enter at least one non-zero percentage.');
+      const ratios = elems.map(e=>({...e, r: e.pct/e.at}));
+      const minR = Math.min(...ratios.map(r=>r.r));
+      const norm = ratios.map(r=>({...r, n: r.r/minR}));
+      // Round to nearest 0.5, then handle halves
+      const rounded = norm.map(r=>({...r, sub: Math.round(r.n*2)/2}));
+      // Find LCM multiplier (handle x.5 → multiply by 2)
+      let mult = 1;
+      if(rounded.some(r=>r.sub%1!==0)) mult=2;
+      const final = rounded.map(r=>({...r, final: Math.round(r.sub*mult)}));
+      const empFormula = final.map(r=>`${r.sym}${r.final===1?'':r.final}`).join('');
+      const empMass = final.reduce((s,r)=>s+r.at*r.final, 0);
+      const st = [
+        `<b>Given:</b> ${elems.map(e=>`%${e.sym}=${e.pct}`).join(', ')}`,
+        `<b>Step 1 — Divide by atomic mass:</b><br>${ratios.map(r=>`  ${r.sym}: ${r.pct}/${r.at} = ${r.r.toFixed(4)}`).join('<br>')}`,
+        `<b>Step 2 — Divide by smallest (${minR.toFixed(4)}):</b><br>${norm.map(r=>`  ${r.sym}: ${r.r.toFixed(4)}/${minR.toFixed(4)} = ${r.n.toFixed(3)}`).join('<br>')}`,
+        `<b>Step 3 — Round to whole numbers${mult===2?' (multiply by 2 to clear halves)':''}:</b><br>${final.map(r=>`  ${r.sym}: ${r.final}`).join('<br>')}`,
+        `<b>✅ Empirical Formula = <span style="color:var(--accent3)">${empFormula}</span>  |  Empirical mass = ${empMass} g/mol</b>`,
+      ];
+      const MM = parseFloat(v.MM);
+      if(!isNaN(MM)&&MM>0) {
+        const n = Math.round(MM/empMass);
+        const molFormula = final.map(r=>`${r.sym}${r.final*n===1?'':r.final*n}`).join('');
+        st.push(`<b>Step 4 — Molecular Formula:</b> n = ${MM}/${empMass} ≈ ${n} → Molecular formula = <span style="color:var(--accent2)">${molFormula}</span>`);
+      }
+      return steps(st);
+    }
+  },
+
+  limiting_reagent: {
+    title: 'Limiting Reagent',
+    formulae: 'Find moles of each reactant\nDivide by stoichiometric coefficient\nSmaller value → Limiting Reagent\nProduct = moles of LR × (stoich. coeff. of product / stoich. coeff. of LR)',
+    fields: [
+      {id:'n1', label:'Moles of Reactant 1', placeholder:'e.g. 2', unit:'mol'},
+      {id:'c1', label:'Coefficient of Reactant 1', placeholder:'e.g. 1', unit:''},
+      {id:'n2', label:'Moles of Reactant 2', placeholder:'e.g. 3', unit:'mol'},
+      {id:'c2', label:'Coefficient of Reactant 2', placeholder:'e.g. 3', unit:''},
+      {id:'cp', label:'Coefficient of Product', placeholder:'e.g. 2', unit:''},
+    ],
+    solve(v) {
+      const n1=parseFloat(v.n1),c1=parseFloat(v.c1),n2=parseFloat(v.n2),c2=parseFloat(v.c2),cp=parseFloat(v.cp);
+      if([n1,c1,n2,c2,cp].some(isNaN)||[c1,c2,cp].some(x=>x<=0)) return err('All values must be positive numbers.');
+      const r1=n1/c1, r2=n2/c2;
+      const lr = r1<r2?1:2;
+      const lrRatio = Math.min(r1,r2);
+      const product = lrRatio*cp;
+      return steps([
+        `<b>Given:</b> n(R1)=${n1} mol (coeff ${c1}), n(R2)=${n2} mol (coeff ${c2}), product coeff=${cp}`,
+        `<b>Step 1 — Divide moles by coefficient:</b><br>Reactant 1: ${n1}/${c1} = ${r1.toFixed(4)}<br>Reactant 2: ${n2}/${c2} = ${r2.toFixed(4)}`,
+        `<b>Step 2 — Compare ratios:</b> Smaller ratio = <b>Reactant ${lr}</b> (Limiting Reagent)`,
+        `<b>Step 3 — Moles of product:</b><br>= moles of LR / c(LR) × c(product)<br>= ${lrRatio.toFixed(4)} × ${cp} = <b>${product.toFixed(4)} mol</b>`,
+        `<b>✅ Limiting Reagent = Reactant ${lr} | Product formed = ${product.toFixed(4)} mol</b>`,
+      ]);
+    }
+  },
+
+  ideal_gas: {
+    title: 'Ideal Gas Law — PV = nRT',
+    formulae: 'PV = nRT\nR = 0.0821 L·atm·mol⁻¹·K⁻¹ = 8.314 J·mol⁻¹·K⁻¹\nT(K) = T(°C) + 273',
+    fields: [
+      {id:'find', label:'Find which variable', placeholder:'', unit:'', type:'select', options:['P (pressure)','V (volume)','n (moles)','T (temperature)']},
+      {id:'P', label:'Pressure P (atm)', placeholder:'leave blank to find P', unit:'atm'},
+      {id:'V', label:'Volume V (L)', placeholder:'leave blank to find V', unit:'L'},
+      {id:'n', label:'Moles n (mol)', placeholder:'leave blank to find n', unit:'mol'},
+      {id:'T', label:'Temperature T (°C or K)', placeholder:'e.g. 27 for 300K', unit:'°C or K'},
+      {id:'Tunit', label:'T unit', placeholder:'', unit:'', type:'select', options:['Celsius (°C)','Kelvin (K)']},
+    ],
+    solve(v) {
+      const R=0.0821;
+      let T=parseFloat(v.T);
+      if(isNaN(T)) return err('Enter temperature.');
+      if(!v.Tunit||v.Tunit.startsWith('Celsius')) T=T+273;
+      const P=parseFloat(v.P), V=parseFloat(v.V), n=parseFloat(v.n);
+      const find=v.find||'P (pressure)';
+      if(find.startsWith('P')) {
+        if(isNaN(V)||isNaN(n)) return err('Enter V and n to find P.');
+        const Pans=n*R*T/V;
+        return steps([
+          `<b>Given:</b> n=${n} mol, V=${V} L, T=${T} K`,
+          `<b>Formula:</b> P = nRT/V`,
+          `<b>P = ${n} × 0.0821 × ${T} / ${V}`,
+          `<b>P = ${(n*R*T).toFixed(4)} / ${V} = <span style="color:var(--accent2)">${Pans.toFixed(4)} atm</span></b>`,
+          `<b>✅ Pressure P = ${Pans.toFixed(4)} atm</b>`,
+        ]);
+      } else if(find.startsWith('V')) {
+        if(isNaN(P)||isNaN(n)) return err('Enter P and n to find V.');
+        const Vans=n*R*T/P;
+        return steps([
+          `<b>Given:</b> n=${n} mol, P=${P} atm, T=${T} K`,
+          `<b>Formula:</b> V = nRT/P`,
+          `<b>V = ${n} × 0.0821 × ${T} / ${P} = <span style="color:var(--accent2)">${Vans.toFixed(4)} L</span></b>`,
+          `<b>✅ Volume V = ${Vans.toFixed(4)} L</b>`,
+        ]);
+      } else if(find.startsWith('n')) {
+        if(isNaN(P)||isNaN(V)) return err('Enter P and V to find n.');
+        const nans=P*V/(R*T);
+        return steps([
+          `<b>Given:</b> P=${P} atm, V=${V} L, T=${T} K`,
+          `<b>Formula:</b> n = PV/RT`,
+          `<b>n = (${P} × ${V}) / (0.0821 × ${T}) = ${(P*V).toFixed(4)} / ${(R*T).toFixed(4)} = <span style="color:var(--accent2)">${nans.toFixed(4)} mol</span></b>`,
+          `<b>✅ Moles n = ${nans.toFixed(4)} mol</b>`,
+        ]);
+      } else {
+        if(isNaN(P)||isNaN(V)||isNaN(n)) return err('Enter P, V, and n to find T.');
+        const Tans=P*V/(n*R);
+        return steps([
+          `<b>Given:</b> P=${P} atm, V=${V} L, n=${n} mol`,
+          `<b>Formula:</b> T = PV/nR`,
+          `<b>T = (${P} × ${V}) / (${n} × 0.0821) = ${(P*V).toFixed(4)} / ${(n*R).toFixed(4)} = <span style="color:var(--accent2)">${Tans.toFixed(2)} K = ${(Tans-273).toFixed(2)} °C</span></b>`,
+          `<b>✅ Temperature T = ${Tans.toFixed(2)} K (${(Tans-273).toFixed(2)} °C)</b>`,
+        ]);
+      }
+    }
+  },
+
+  combined_gas: {
+    title: 'Combined Gas Law',
+    formulae: 'P₁V₁/T₁ = P₂V₂/T₂\nT must be in Kelvin (K = °C + 273)',
+    fields: [
+      {id:'P1', label:'P₁ (atm)', placeholder:'e.g. 1', unit:'atm'},
+      {id:'V1', label:'V₁ (L)', placeholder:'e.g. 10', unit:'L'},
+      {id:'T1', label:'T₁ (°C)', placeholder:'e.g. 27', unit:'°C'},
+      {id:'P2', label:'P₂ (atm)', placeholder:'e.g. 2', unit:'atm'},
+      {id:'T2', label:'T₂ (°C)', placeholder:'e.g. 127', unit:'°C'},
+    ],
+    solve(v) {
+      const P1=parseFloat(v.P1),V1=parseFloat(v.V1),T1=parseFloat(v.T1)+273,P2=parseFloat(v.P2),T2=parseFloat(v.T2)+273;
+      if([P1,V1,T1,P2,T2].some(isNaN)||T1<=0||T2<=0) return err('Enter all values. T must be above −273°C.');
+      const V2=P1*V1*T2/(T1*P2);
+      return steps([
+        `<b>Given:</b> P₁=${P1} atm, V₁=${V1} L, T₁=${T1} K | P₂=${P2} atm, T₂=${T2} K`,
+        `<b>Formula:</b> P₁V₁/T₁ = P₂V₂/T₂ → V₂ = P₁V₁T₂/T₁P₂`,
+        `<b>V₂ = (${P1} × ${V1} × ${T2}) / (${T1} × ${P2})`,
+        `<b>V₂ = ${(P1*V1*T2).toFixed(4)} / ${(T1*P2).toFixed(4)} = <span style="color:var(--accent2)">${V2.toFixed(4)} L</span></b>`,
+        `<b>✅ Final Volume V₂ = ${V2.toFixed(4)} L</b>`,
+      ]);
+    }
+  },
+
+  graham: {
+    title: "Graham's Law of Effusion/Diffusion",
+    formulae: 'r₁/r₂ = √(M₂/M₁)\nTime ratio: t₁/t₂ = √(M₁/M₂)\nM = molar mass',
+    fields: [
+      {id:'M1', label:'Molar Mass of Gas 1 (g/mol)', placeholder:'e.g. 2 for H₂', unit:'g/mol'},
+      {id:'M2', label:'Molar Mass of Gas 2 (g/mol)', placeholder:'e.g. 32 for O₂', unit:'g/mol'},
+    ],
+    solve(v) {
+      const M1=parseFloat(v.M1), M2=parseFloat(v.M2);
+      if(isNaN(M1)||isNaN(M2)||M1<=0||M2<=0) return err('Enter valid molar masses.');
+      const rRatio=Math.sqrt(M2/M1);
+      const tRatio=Math.sqrt(M1/M2);
+      return steps([
+        `<b>Given:</b> M₁=${M1} g/mol, M₂=${M2} g/mol`,
+        `<b>Formula:</b> r₁/r₂ = √(M₂/M₁)`,
+        `<b>Step 1:</b> √(M₂/M₁) = √(${M2}/${M1}) = √${(M2/M1).toFixed(4)} = <b>${rRatio.toFixed(4)}</b>`,
+        `<b>Rate ratio r₁:r₂ = ${rRatio.toFixed(4)} : 1</b>`,
+        `<b>Time ratio t₁:t₂ = 1 : ${rRatio.toFixed(4)}</b>  (faster rate = less time)`,
+        `<b>✅ Gas 1 effuses ${rRatio.toFixed(3)}× ${rRatio>=1?'faster':'slower'} than Gas 2</b>`,
+      ]);
+    }
+  },
+
+  dalton: {
+    title: "Dalton's Law of Partial Pressure",
+    formulae: 'P_total = P₁ + P₂ + P₃ + ...\nP_i = χᵢ × P_total (χ = mole fraction)\nχᵢ = nᵢ / n_total',
+    fields: [
+      {id:'n1', label:'Moles of Gas 1 (n₁)', placeholder:'e.g. 2', unit:'mol'},
+      {id:'n2', label:'Moles of Gas 2 (n₂)', placeholder:'e.g. 3', unit:'mol'},
+      {id:'Pt', label:'Total Pressure P_total (atm)', placeholder:'e.g. 5', unit:'atm'},
+    ],
+    solve(v) {
+      const n1=parseFloat(v.n1),n2=parseFloat(v.n2),Pt=parseFloat(v.Pt);
+      if(isNaN(n1)||isNaN(n2)||isNaN(Pt)||n1<0||n2<0||Pt<=0) return err('Enter valid values.');
+      const nt=n1+n2, x1=n1/nt, x2=n2/nt, P1=x1*Pt, P2=x2*Pt;
+      return steps([
+        `<b>Given:</b> n₁=${n1} mol, n₂=${n2} mol, P_total=${Pt} atm`,
+        `<b>Step 1 — Total moles:</b> n_total = ${n1}+${n2} = ${nt} mol`,
+        `<b>Step 2 — Mole fractions:</b><br>χ₁ = ${n1}/${nt} = ${x1.toFixed(4)}<br>χ₂ = ${n2}/${nt} = ${x2.toFixed(4)}`,
+        `<b>Step 3 — Partial pressures:</b><br>P₁ = χ₁ × P_total = ${x1.toFixed(4)} × ${Pt} = <b>${P1.toFixed(4)} atm</b><br>P₂ = χ₂ × P_total = ${x2.toFixed(4)} × ${Pt} = <b>${P2.toFixed(4)} atm</b>`,
+        `<b>Check:</b> P₁+P₂ = ${(P1+P2).toFixed(4)} atm ✓`,
+        `<b>✅ P₁ = ${P1.toFixed(4)} atm | P₂ = ${P2.toFixed(4)} atm</b>`,
+      ]);
+    }
+  },
+
+  rms_speed: {
+    title: 'RMS Speed of Gas Molecules',
+    formulae: 'u_rms = √(3RT/M)\nu_avg = √(8RT/πM)\nu_mp = √(2RT/M)\nR=8.314 J/mol·K, M in kg/mol',
+    fields: [
+      {id:'T', label:'Temperature (°C)', placeholder:'e.g. 27', unit:'°C'},
+      {id:'M', label:'Molar Mass (g/mol)', placeholder:'e.g. 32 for O₂', unit:'g/mol'},
+    ],
+    solve(v) {
+      const T=parseFloat(v.T)+273, M=parseFloat(v.M)/1000;
+      if(isNaN(T)||isNaN(M)||M<=0||T<=0) return err('Enter valid temperature and molar mass.');
+      const R=8.314;
+      const urms=Math.sqrt(3*R*T/M), uavg=Math.sqrt(8*R*T/(Math.PI*M)), ump=Math.sqrt(2*R*T/M);
+      return steps([
+        `<b>Given:</b> T=${parseFloat(v.T)}°C = ${T} K, M=${parseFloat(v.M)} g/mol = ${M} kg/mol`,
+        `<b>Step 1 — RMS speed:</b> u_rms = √(3RT/M) = √(3×8.314×${T}/${M.toExponential(3)})<br>= √${(3*R*T/M).toFixed(2)} = <b>${urms.toFixed(2)} m/s</b>`,
+        `<b>Step 2 — Average speed:</b> u_avg = √(8RT/πM) = <b>${uavg.toFixed(2)} m/s</b>`,
+        `<b>Step 3 — Most probable:</b> u_mp = √(2RT/M) = <b>${ump.toFixed(2)} m/s</b>`,
+        `<b>Ratio: u_mp : u_avg : u_rms = 1 : 1.128 : 1.225</b>`,
+        `<b>✅ u_rms=${urms.toFixed(2)} m/s | u_avg=${uavg.toFixed(2)} m/s | u_mp=${ump.toFixed(2)} m/s</b>`,
+      ]);
+    }
+  },
+
+  delta_h: {
+    title: 'Enthalpy Change (ΔH)',
+    formulae: 'ΔH = H_products − H_reactants\nΔH = ΣΔHf(products) − ΣΔHf(reactants)\nΔH = q at constant pressure',
+    fields: [
+      {id:'sumP', label:'ΣΔHf of Products (kJ/mol)', placeholder:'e.g. −393.5', unit:'kJ/mol'},
+      {id:'sumR', label:'ΣΔHf of Reactants (kJ/mol)', placeholder:'e.g. 0 + 0 = 0', unit:'kJ/mol'},
+    ],
+    solve(v) {
+      const P=parseFloat(v.sumP), R=parseFloat(v.sumR);
+      if(isNaN(P)||isNaN(R)) return err('Enter values for products and reactants.');
+      const dH=P-R;
+      return steps([
+        `<b>Given:</b> ΣΔHf(products) = ${P} kJ/mol, ΣΔHf(reactants) = ${R} kJ/mol`,
+        `<b>Formula:</b> ΔH = ΣΔHf(products) − ΣΔHf(reactants)`,
+        `<b>ΔH = ${P} − (${R}) = <span style="color:var(--accent2)">${dH.toFixed(4)} kJ/mol</span></b>`,
+        dH<0?`<b>Since ΔH < 0 → Exothermic reaction (heat released)</b>`:`<b>Since ΔH > 0 → Endothermic reaction (heat absorbed)</b>`,
+        `<b>✅ ΔH = ${dH.toFixed(4)} kJ/mol</b>`,
+      ]);
+    }
+  },
+
+  hess: {
+    title: "Hess's Law",
+    formulae: "ΔH_overall = ΣΔH_steps\nIf reaction is reversed: ΔH changes sign\nIf multiplied by n: ΔH × n",
+    fields: [
+      {id:'dH1', label:'ΔH₁ (kJ)', placeholder:'e.g. −394', unit:'kJ'},
+      {id:'m1', label:'Multiplier for step 1', placeholder:'e.g. 1 or −1 if reversed', unit:''},
+      {id:'dH2', label:'ΔH₂ (kJ)', placeholder:'e.g. −286', unit:'kJ'},
+      {id:'m2', label:'Multiplier for step 2', placeholder:'e.g. 1 or −1 if reversed', unit:''},
+      {id:'dH3', label:'ΔH₃ (kJ) (optional)', placeholder:'leave blank if none', unit:'kJ'},
+      {id:'m3', label:'Multiplier for step 3', placeholder:'e.g. 1', unit:''},
+    ],
+    solve(v) {
+      const entries=[];
+      [[v.dH1,v.m1],[v.dH2,v.m2],[v.dH3,v.m3]].forEach(([dh,m],i)=>{
+        const dhv=parseFloat(dh), mv=parseFloat(m);
+        if(!isNaN(dhv)) entries.push({i:i+1, dh:dhv, m:isNaN(mv)?1:mv});
+      });
+      if(entries.length<2) return err('Enter at least 2 steps.');
+      const total=entries.reduce((s,e)=>s+e.dh*e.m,0);
+      const st=[`<b>Hess's Law: ΔH_total = sum of (ΔH × multiplier) for each step</b>`];
+      entries.forEach(e=>st.push(`<b>Step ${e.i}:</b> ΔH${e.i}=${e.dh} kJ × (${e.m}) = ${(e.dh*e.m).toFixed(4)} kJ`));
+      st.push(`<b>ΔH_overall = ${entries.map(e=>`(${(e.dh*e.m).toFixed(2)})`).join(' + ')} = <span style="color:var(--accent2)">${total.toFixed(4)} kJ</span></b>`);
+      st.push(`<b>✅ ΔH = ${total.toFixed(4)} kJ  ${total<0?'(Exothermic)':'(Endothermic)'}</b>`);
+      return steps(st);
+    }
+  },
+
+  gibbs: {
+    title: 'Gibbs Free Energy: ΔG = ΔH − TΔS',
+    formulae: 'ΔG = ΔH − TΔS\nΔG < 0 → Spontaneous\nΔG > 0 → Non-spontaneous\nΔG = 0 → Equilibrium\nT(K) = T(°C) + 273',
+    fields: [
+      {id:'dH', label:'ΔH (kJ/mol)', placeholder:'e.g. −100', unit:'kJ/mol'},
+      {id:'dS', label:'ΔS (J/mol·K)', placeholder:'e.g. 200', unit:'J/mol·K'},
+      {id:'T', label:'Temperature (°C)', placeholder:'e.g. 25', unit:'°C'},
+    ],
+    solve(v) {
+      const dH=parseFloat(v.dH), dS=parseFloat(v.dS)/1000, T=parseFloat(v.T)+273;
+      if(isNaN(dH)||isNaN(dS)||isNaN(T)||T<=0) return err('Enter valid ΔH, ΔS and temperature.');
+      const dG=dH-T*dS;
+      const spont=dG<0?'Spontaneous ✅':'Non-spontaneous ❌';
+      return steps([
+        `<b>Given:</b> ΔH=${dH} kJ/mol, ΔS=${parseFloat(v.dS)} J/mol·K = ${dS.toFixed(4)} kJ/mol·K, T=${T} K`,
+        `<b>Formula:</b> ΔG = ΔH − TΔS`,
+        `<b>Step 1:</b> TΔS = ${T} × ${dS.toFixed(4)} = ${(T*dS).toFixed(4)} kJ/mol`,
+        `<b>Step 2:</b> ΔG = ${dH} − ${(T*dS).toFixed(4)} = <span style="color:var(--accent2)">${dG.toFixed(4)} kJ/mol</span>`,
+        `<b>Verdict: ΔG = ${dG.toFixed(4)} kJ/mol → ${spont}</b>`,
+        `<b>✅ ΔG = ${dG.toFixed(4)} kJ/mol</b>`,
+      ]);
+    }
+  },
+
+  kc_kp: {
+    title: 'Kc and Kp — Equilibrium Constants',
+    formulae: 'Kc = [C]^c[D]^d / [A]^a[B]^b  (for aA+bB⇌cC+dD)\nKp = Kc(RT)^Δn  where Δn = moles of gaseous products − reactants\nR = 0.0821 L·atm/mol·K',
+    fields: [
+      {id:'Kc', label:'Kc value', placeholder:'e.g. 0.04', unit:''},
+      {id:'T', label:'Temperature (°C)', placeholder:'e.g. 25', unit:'°C'},
+      {id:'dn', label:'Δn (Δ moles of gas)', placeholder:'e.g. 1 or −2', unit:''},
+    ],
+    solve(v) {
+      const Kc=parseFloat(v.Kc), T=parseFloat(v.T)+273, dn=parseFloat(v.dn);
+      if(isNaN(Kc)||isNaN(T)||isNaN(dn)||T<=0) return err('Enter Kc, temperature and Δn.');
+      const R=0.0821;
+      const Kp=Kc*Math.pow(R*T,dn);
+      return steps([
+        `<b>Given:</b> Kc=${Kc}, T=${T} K, Δn=${dn}`,
+        `<b>Formula:</b> Kp = Kc × (RT)^Δn`,
+        `<b>Step 1:</b> RT = 0.0821 × ${T} = ${(R*T).toFixed(4)} L·atm/mol`,
+        `<b>Step 2:</b> (RT)^Δn = ${(R*T).toFixed(4)}^${dn} = ${Math.pow(R*T,dn).toFixed(6)}`,
+        `<b>Step 3:</b> Kp = ${Kc} × ${Math.pow(R*T,dn).toFixed(6)} = <span style="color:var(--accent2)">${Kp.toExponential(4)}</span>`,
+        dn===0?`<b>Note: Δn=0 → Kp = Kc</b>`:'',
+        `<b>✅ Kp = ${Kp.toExponential(4)}</b>`,
+      ]);
+    }
+  },
+
+  degree_dissoc: {
+    title: 'Degree of Dissociation (α)',
+    formulae: 'For A ⇌ B + C:\nAt eq: [A]=(1−α)c, [B]=[C]=αc\nKc = α²c/(1−α) ≈ α²c (if α<<1)\nα = √(Kc/c)',
+    fields: [
+      {id:'Kc', label:'Kc (equilibrium constant)', placeholder:'e.g. 1.8e-5', unit:''},
+      {id:'c', label:'Initial concentration c (mol/L)', placeholder:'e.g. 0.1', unit:'mol/L'},
+    ],
+    solve(v) {
+      const Kc=parseFloat(v.Kc), c=parseFloat(v.c);
+      if(isNaN(Kc)||isNaN(c)||c<=0||Kc<=0) return err('Enter valid positive Kc and concentration.');
+      const alpha_approx=Math.sqrt(Kc/c);
+      const pct=alpha_approx*100;
+      return steps([
+        `<b>Given:</b> Kc=${Kc}, c=${c} mol/L`,
+        `<b>Equilibrium expression (A⇌B+C):</b> Kc ≈ α²c (when α << 1)`,
+        `<b>Step 1:</b> α = √(Kc/c) = √(${Kc}/${c}) = √${(Kc/c).toExponential(4)} = <b>${alpha_approx.toFixed(6)}</b>`,
+        `<b>Step 2:</b> % dissociation = α × 100 = <b>${pct.toFixed(4)}%</b>`,
+        alpha_approx<0.05?`<b>✓ Approximation valid (α=${alpha_approx.toFixed(4)} < 0.05)</b>`:`<b>⚠️ α=${alpha_approx.toFixed(4)} is not << 1; use quadratic for exact answer.</b>`,
+        `<b>✅ Degree of dissociation α = ${alpha_approx.toFixed(6)} (${pct.toFixed(4)}%)</b>`,
+      ]);
+    }
+  },
+
+  le_chatelier: {
+    title: "Le Chatelier's Principle — Effect Checker",
+    formulae: 'Increase in concentration of reactant → shifts RIGHT\nDecrease in concentration of product → shifts RIGHT\nIncrease in pressure → shifts to side with fewer moles of gas\nIncrease in temperature → shifts toward endothermic direction',
+    fields: [
+      {id:'dn_r', label:'Moles of gas on Reactant side', placeholder:'e.g. 1', unit:''},
+      {id:'dn_p', label:'Moles of gas on Product side', placeholder:'e.g. 2', unit:''},
+      {id:'dH_sign', label:'Reaction type', placeholder:'', unit:'', type:'select', options:['Exothermic (ΔH < 0)','Endothermic (ΔH > 0)']},
+      {id:'change', label:'Change applied', placeholder:'', unit:'', type:'select', options:['Increase Temperature','Decrease Temperature','Increase Pressure','Decrease Pressure','Add Reactant','Remove Product']},
+    ],
+    solve(v) {
+      const dnR=parseFloat(v.dn_r), dnP=parseFloat(v.dn_p);
+      const exo=v.dH_sign&&v.dH_sign.startsWith('Exo');
+      const change=v.change||'';
+      let direction='', reason='';
+      if(change==='Increase Temperature') {
+        direction=exo?'← LEFT (backward)':'→ RIGHT (forward)';
+        reason=`Increasing T favours ${exo?'endothermic (backward)':'endothermic (forward)'} direction to absorb extra heat.`;
+      } else if(change==='Decrease Temperature') {
+        direction=exo?'→ RIGHT (forward)':'← LEFT (backward)';
+        reason=`Decreasing T favours ${exo?'exothermic (forward)':'exothermic (backward)'} direction to release more heat.`;
+      } else if(change==='Increase Pressure') {
+        if(isNaN(dnR)||isNaN(dnP)) return err('Enter moles of gas on each side.');
+        direction=dnP<dnR?'→ RIGHT':dnP>dnR?'← LEFT':'No change (Δn=0)';
+        reason=`Higher pressure favours side with fewer moles of gas. Reactant side: ${dnR}, Product side: ${dnP}.`;
+      } else if(change==='Decrease Pressure') {
+        if(isNaN(dnR)||isNaN(dnP)) return err('Enter moles of gas on each side.');
+        direction=dnP>dnR?'→ RIGHT':dnP<dnR?'← LEFT':'No change (Δn=0)';
+        reason=`Lower pressure favours side with more moles of gas.`;
+      } else if(change==='Add Reactant') {
+        direction='→ RIGHT (forward)';
+        reason='Adding reactant increases its concentration → equilibrium shifts right to consume it.';
+      } else if(change==='Remove Product') {
+        direction='→ RIGHT (forward)';
+        reason='Removing product decreases its concentration → equilibrium shifts right to restore it.';
+      } else return err('Select a change to apply.');
+      return steps([
+        `<b>Reaction:</b> ${dnR} mol gas (reactants) ⇌ ${dnP} mol gas (products) | ${exo?'Exothermic':'Endothermic'}`,
+        `<b>Change applied:</b> ${change}`,
+        `<b>Direction of shift:</b> <span style="color:var(--accent2)">${direction}</span>`,
+        `<b>Reason:</b> ${reason}`,
+        `<b>✅ Equilibrium shifts: ${direction}</b>`,
+      ]);
+    }
+  },
+
+  ph_strong: {
+    title: 'pH of Strong Acid / Strong Base',
+    formulae: 'Strong acid: [H⁺] = Molarity\npH = −log[H⁺]\nStrong base: [OH⁻] = Molarity\npOH = −log[OH⁻]\npH + pOH = 14 (at 25°C)',
+    fields: [
+      {id:'type', label:'Type', placeholder:'', unit:'', type:'select', options:['Strong Acid','Strong Base']},
+      {id:'M', label:'Molarity (mol/L)', placeholder:'e.g. 0.01', unit:'mol/L'},
+    ],
+    solve(v) {
+      const M=parseFloat(v.M), isAcid=!v.type||v.type==='Strong Acid';
+      if(isNaN(M)||M<=0) return err('Enter valid molarity.');
+      const pH=isAcid?-Math.log10(M):14+Math.log10(M);
+      const pOH=14-pH;
+      return steps([
+        `<b>Given:</b> ${isAcid?'Strong Acid':'Strong Base'}, Molarity = ${M} mol/L`,
+        isAcid
+          ?`<b>Step 1:</b> [H⁺] = ${M} mol/L (complete dissociation)`
+          :`<b>Step 1:</b> [OH⁻] = ${M} mol/L → pOH = −log(${M}) = ${(-Math.log10(M)).toFixed(4)}`,
+        `<b>Step 2:</b> pH = ${pH.toFixed(4)}  |  pOH = ${pOH.toFixed(4)}`,
+        pH<7?`<b>Solution is Acidic (pH < 7)</b>`:pH>7?`<b>Solution is Basic (pH > 7)</b>`:`<b>Solution is Neutral (pH = 7)</b>`,
+        `<b>✅ pH = ${pH.toFixed(4)}</b>`,
+      ]);
+    }
+  },
+
+  ph_weak: {
+    title: 'pH of Weak Acid (Ka)',
+    formulae: 'HA ⇌ H⁺ + A⁻\n[H⁺] = √(Ka × C)\npH = −log[H⁺]\n% dissociation = ([H⁺]/C) × 100',
+    fields: [
+      {id:'Ka', label:'Ka (acid dissociation constant)', placeholder:'e.g. 1.8e-5', unit:''},
+      {id:'C', label:'Concentration C (mol/L)', placeholder:'e.g. 0.1', unit:'mol/L'},
+    ],
+    solve(v) {
+      const Ka=parseFloat(v.Ka), C=parseFloat(v.C);
+      if(isNaN(Ka)||isNaN(C)||Ka<=0||C<=0) return err('Enter valid Ka and concentration.');
+      const H=Math.sqrt(Ka*C), pH=-Math.log10(H), pct=H/C*100;
+      return steps([
+        `<b>Given:</b> Ka=${Ka}, C=${C} mol/L`,
+        `<b>Formula:</b> [H⁺] = √(Ka × C)`,
+        `<b>Step 1:</b> Ka × C = ${Ka} × ${C} = ${(Ka*C).toExponential(4)}`,
+        `<b>Step 2:</b> [H⁺] = √${(Ka*C).toExponential(4)} = <b>${H.toExponential(4)} mol/L</b>`,
+        `<b>Step 3:</b> pH = −log(${H.toExponential(4)}) = <b>${pH.toFixed(4)}</b>`,
+        `<b>Step 4:</b> % dissociation = (${H.toExponential(4)}/${C}) × 100 = <b>${pct.toFixed(4)}%</b>`,
+        `<b>✅ pH = ${pH.toFixed(4)} | [H⁺] = ${H.toExponential(4)} mol/L | Dissociation = ${pct.toFixed(4)}%</b>`,
+      ]);
+    }
+  },
+
+  buffer_ph: {
+    title: 'Buffer pH — Henderson-Hasselbalch Equation',
+    formulae: 'pH = pKa + log([A⁻]/[HA])\npKa = −log(Ka)\nFor basic buffer: pOH = pKb + log([B⁺H]/[B])',
+    fields: [
+      {id:'Ka', label:'Ka of weak acid', placeholder:'e.g. 1.8e-5', unit:''},
+      {id:'Ca', label:'Concentration of weak acid [HA] (mol/L)', placeholder:'e.g. 0.1', unit:'mol/L'},
+      {id:'Cs', label:'Concentration of salt [A⁻] (mol/L)', placeholder:'e.g. 0.1', unit:'mol/L'},
+    ],
+    solve(v) {
+      const Ka=parseFloat(v.Ka), Ca=parseFloat(v.Ca), Cs=parseFloat(v.Cs);
+      if(isNaN(Ka)||isNaN(Ca)||isNaN(Cs)||Ka<=0||Ca<=0||Cs<=0) return err('Enter valid Ka, [HA], and [A⁻].');
+      const pKa=-Math.log10(Ka), pH=pKa+Math.log10(Cs/Ca);
+      return steps([
+        `<b>Given:</b> Ka=${Ka}, [HA]=${Ca} mol/L, [A⁻]=${Cs} mol/L`,
+        `<b>Formula:</b> pH = pKa + log([A⁻]/[HA])`,
+        `<b>Step 1:</b> pKa = −log(${Ka}) = ${pKa.toFixed(4)}`,
+        `<b>Step 2:</b> [A⁻]/[HA] = ${Cs}/${Ca} = ${(Cs/Ca).toFixed(4)}`,
+        `<b>Step 3:</b> log(${(Cs/Ca).toFixed(4)}) = ${Math.log10(Cs/Ca).toFixed(4)}`,
+        `<b>Step 4:</b> pH = ${pKa.toFixed(4)} + ${Math.log10(Cs/Ca).toFixed(4)} = <span style="color:var(--accent2)">${pH.toFixed(4)}</span>`,
+        `<b>✅ Buffer pH = ${pH.toFixed(4)}</b>`,
+      ]);
+    }
+  },
+
+  solubility: {
+    title: 'Solubility Product (Ksp)',
+    formulae: 'For AxBy ⇌ xAⁿ⁺ + yBᵐ⁻\nKsp = [A]^x × [B]^y\nFor AB: Ksp = s² → s = √Ksp\nFor AB₂: Ksp = 4s³ → s = (Ksp/4)^(1/3)',
+    fields: [
+      {id:'type', label:'Salt type', placeholder:'', unit:'', type:'select', options:['AB (e.g. AgCl)','AB₂ or A₂B (e.g. PbCl₂)','AB₃ or A₃B','Find Ksp from solubility']},
+      {id:'val', label:'Ksp (or solubility s in mol/L if finding Ksp)', placeholder:'e.g. 1.8e-10', unit:''},
+      {id:'salttype2', label:'Salt type for Ksp from s', placeholder:'', unit:'', type:'select', options:['AB','AB₂ or A₂B','AB₃ or A₃B']},
+    ],
+    solve(v) {
+      const val=parseFloat(v.val);
+      if(isNaN(val)||val<=0) return err('Enter a valid positive value.');
+      if(v.type==='AB (e.g. AgCl)') {
+        const s=Math.sqrt(val);
+        return steps([`<b>AB ⇌ A⁺ + B⁻ → Ksp = s²</b>`,`<b>s = √Ksp = √${val} = <span style="color:var(--accent2)">${s.toExponential(4)} mol/L</span></b>`,`<b>✅ Solubility = ${s.toExponential(4)} mol/L</b>`]);
+      } else if(v.type&&v.type.startsWith('AB₂')) {
+        const s=Math.cbrt(val/4);
+        return steps([`<b>AB₂ ⇌ A²⁺ + 2B⁻ → Ksp = [A²⁺][B⁻]² = s×(2s)² = 4s³</b>`,`<b>s = (Ksp/4)^(1/3) = (${val}/4)^(1/3) = <span style="color:var(--accent2)">${s.toExponential(4)} mol/L</span></b>`,`<b>✅ Solubility = ${s.toExponential(4)} mol/L</b>`]);
+      } else if(v.type&&v.type.startsWith('AB₃')) {
+        const s=Math.pow(val/27,0.25);
+        return steps([`<b>AB₃ ⇌ A³⁺ + 3B⁻ → Ksp = 27s⁴</b>`,`<b>s = (Ksp/27)^(1/4) = <span style="color:var(--accent2)">${s.toExponential(4)} mol/L</span></b>`,`<b>✅ Solubility = ${s.toExponential(4)} mol/L</b>`]);
+      } else {
+        const st2=v.salttype2||'AB';
+        const s=val;
+        let Ksp,formula;
+        if(st2==='AB'){Ksp=s*s;formula='Ksp=s²';}
+        else if(st2.startsWith('AB₂')){Ksp=4*s*s*s;formula='Ksp=4s³';}
+        else{Ksp=27*s*s*s*s;formula='Ksp=27s⁴';}
+        return steps([`<b>Given: s = ${s.toExponential(4)} mol/L, type: ${st2}</b>`,`<b>Formula: ${formula}</b>`,`<b>Ksp = <span style="color:var(--accent2)">${Ksp.toExponential(4)}</span></b>`,`<b>✅ Ksp = ${Ksp.toExponential(4)}</b>`]);
+      }
+    }
+  },
+
+  oxidation_number: {
+    title: 'Oxidation Number — Rules & Examples',
+    formulae: 'Rules:\n1. Free element = 0\n2. Monoatomic ion = charge\n3. O = −2 (except peroxide: −1)\n4. H = +1 (except hydrides: −1)\n5. Sum in neutral compound = 0\n6. Sum in ion = charge of ion',
+    fields: [
+      {id:'formula', label:'Formula or ion (text input)', placeholder:'e.g. Cr2O7^2-, KMnO4, SO4^2-', unit:''},
+    ],
+    solve(v) {
+      const f=v.formula||'';
+      // Hardcoded common cases for offline use
+      const db={
+        'KMnO4':'K=+1, O=−2, let Mn=x: +1+x+4(−2)=0 → x=+7 → Mn=<b>+7</b>',
+        'K2Cr2O7':'K=+1, O=−2, let Cr=x: 2(+1)+2x+7(−2)=0 → 2+2x−14=0 → x=+6 → Cr=<b>+6</b>',
+        'Cr2O7^2-':'Cr=x, O=−2: 2x+7(−2)=−2 → 2x=12 → Cr=<b>+6</b>',
+        'MnO4^-':'Mn=x, O=−2: x+4(−2)=−1 → x=+7 → Mn=<b>+7</b>',
+        'SO4^2-':'S=x, O=−2: x+4(−2)=−2 → x=+6 → S=<b>+6</b>',
+        'SO3^2-':'S=x, O=−2: x+3(−2)=−2 → x=+4 → S=<b>+4</b>',
+        'NO3^-':'N=x, O=−2: x+3(−2)=−1 → x=+5 → N=<b>+5</b>',
+        'NO2^-':'N=x: x+2(−2)=−1 → x=+3 → N=<b>+3</b>',
+        'Fe3O4':'Mixed oxide: Fe=+8/3 (⅔ Fe³⁺ + ⅓ Fe²⁺). Avg ox. state of Fe = <b>+8/3</b>',
+        'H2O2':'H=+1, O=x: 2(+1)+2x=0 → x=−1 → O=<b>−1 (peroxide)</b>',
+        'Na2O2':'Na=+1, O=x: 2(+1)+2x=0 → x=−1 → O=<b>−1 (peroxide)</b>',
+        'ClO3^-':'Cl=x, O=−2: x+3(−2)=−1 → x=+5 → Cl=<b>+5</b>',
+        'ClO4^-':'Cl=x: x+4(−2)=−1 → x=+7 → Cl=<b>+7</b>',
+        'PO4^3-':'P=x: x+4(−2)=−3 → x=+5 → P=<b>+5</b>',
+        'CO3^2-':'C=x: x+3(−2)=−2 → x=+4 → C=<b>+4</b>',
+        'NH4^+':'N=x, H=+1: x+4(+1)=+1 → x=−3 → N=<b>−3</b>',
+        'Cr2O3':'Cr=x: 2x+3(−2)=0 → x=+3 → Cr=<b>+3</b>',
+        'MnO2':'Mn=x: x+2(−2)=0 → x=+4 → Mn=<b>+4</b>',
+        'CrO4^2-':'Cr=x: x+4(−2)=−2 → x=+6 → Cr=<b>+6</b>',
+      };
+      const key=Object.keys(db).find(k=>f.replace(/\s/g,'').toLowerCase()===k.toLowerCase());
+      if(key) {
+        return steps([
+          `<b>Formula: ${f}</b>`,
+          `<b>Step-by-step:</b> ${db[key]}`,
+          `<b>✅ Oxidation number found using algebraic method.</b>`,
+        ]);
+      }
+      return steps([
+        `<b>Formula entered: ${f}</b>`,
+        `<b>General rules applied:</b>`,
+        `★ Free elements (Na, O₂, Fe, etc.) → O.N. = 0`,
+        `★ O in most compounds = −2 (except peroxides: −1)`,
+        `★ H in most compounds = +1 (except metal hydrides: −1)`,
+        `★ Sum of O.N. in neutral compound = 0`,
+        `★ Sum of O.N. in ion = charge of ion`,
+        `<b>Formula "${f}" not found in built-in database. Try: KMnO4, K2Cr2O7, SO4^2-, MnO4^-, NO3^-, H2O2, etc.</b>`,
+        `<b>Method: Set unknown element = x, write equation, solve for x.</b>`,
+      ]);
+    }
+  },
+
+  balancing_redox: {
+    title: 'Balance Redox Reactions — Half Reaction Method',
+    formulae: 'Steps:\n1. Split into oxidation and reduction half-reactions\n2. Balance atoms (use H₂O for O, H⁺ for H)\n3. Balance charge by adding electrons\n4. Equalize electrons in both halves\n5. Add half-reactions',
+    fields: [
+      {id:'reaction', label:'Reaction type', placeholder:'', unit:'', type:'select', options:['MnO₄⁻ + Fe²⁺ → Mn²⁺ + Fe³⁺ (acidic)','Cr₂O₇²⁻ + Fe²⁺ → Cr³⁺ + Fe³⁺ (acidic)','MnO₄⁻ + SO₃²⁻ → MnO₂ + SO₄²⁻ (neutral)','Cl₂ → Cl⁻ + ClO₃⁻ (disproportionation)']},
+    ],
+    solve(v) {
+      const r=v.reaction||'';
+      if(r.startsWith('MnO₄⁻ + Fe²⁺')) {
+        return steps([
+          `<b>Reaction: MnO₄⁻ + Fe²⁺ → Mn²⁺ + Fe³⁺ (acidic medium)</b>`,
+          `<b>Step 1 — Oxidation half:</b> Fe²⁺ → Fe³⁺ + e⁻`,
+          `<b>Step 2 — Reduction half:</b> MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O`,
+          `<b>Step 3 — Equalize electrons:</b> Multiply oxidation by 5:<br>5Fe²⁺ → 5Fe³⁺ + 5e⁻`,
+          `<b>Step 4 — Add half-reactions:</b><br>MnO₄⁻ + 5Fe²⁺ + 8H⁺ → Mn²⁺ + 5Fe³⁺ + 4H₂O`,
+          `<b>✅ Balanced: MnO₄⁻ + 5Fe²⁺ + 8H⁺ → Mn²⁺ + 5Fe³⁺ + 4H₂O</b>`,
+        ]);
+      } else if(r.startsWith('Cr₂O₇')) {
+        return steps([
+          `<b>Reaction: Cr₂O₇²⁻ + Fe²⁺ → Cr³⁺ + Fe³⁺ (acidic)</b>`,
+          `<b>Step 1 — Reduction half (Cr reduced from +6 to +3):</b><br>Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O`,
+          `<b>Step 2 — Oxidation half:</b> Fe²⁺ → Fe³⁺ + e⁻ (×6)<br>6Fe²⁺ → 6Fe³⁺ + 6e⁻`,
+          `<b>Step 3 — Balanced equation:</b><br>Cr₂O₇²⁻ + 6Fe²⁺ + 14H⁺ → 2Cr³⁺ + 6Fe³⁺ + 7H₂O`,
+          `<b>✅ Balanced: Cr₂O₇²⁻ + 6Fe²⁺ + 14H⁺ → 2Cr³⁺ + 6Fe³⁺ + 7H₂O</b>`,
+        ]);
+      } else if(r.startsWith('MnO₄⁻ + SO₃')) {
+        return steps([
+          `<b>Reaction: 2MnO₄⁻ + 3SO₃²⁻ + H₂O → 2MnO₂ + 3SO₄²⁻ + 2OH⁻</b>`,
+          `<b>Reduction: MnO₄⁻ + 2H₂O + 3e⁻ → MnO₂ + 4OH⁻</b>`,
+          `<b>Oxidation: SO₃²⁻ + H₂O → SO₄²⁻ + 2H⁺ + 2e⁻</b>`,
+          `<b>Equalize: ×2 reduction, ×3 oxidation:</b><br>2MnO₄⁻ + 3SO₃²⁻ + H₂O → 2MnO₂ + 3SO₄²⁻ + 2OH⁻`,
+          `<b>✅ Balanced (neutral/basic): 2MnO₄⁻ + 3SO₃²⁻ + H₂O → 2MnO₂ + 3SO₄²⁻ + 2OH⁻</b>`,
+        ]);
+      } else {
+        return steps([
+          `<b>Cl₂ Disproportionation (Cl₂ → Cl⁻ + ClO₃⁻)</b>`,
+          `<b>Oxidation half:</b> Cl₂ → 2ClO₃⁻ + 10e⁻ + 12H⁺ (Cl: 0→+5)`,
+          `<b>Reduction half:</b> Cl₂ + 2e⁻ → 2Cl⁻ (Cl: 0→−1)`,
+          `<b>Equalize: ×1 oxidation, ×5 reduction:</b><br>6Cl₂ + 6H₂O → ClO₃⁻ + 5Cl⁻ + 6H⁺`,
+          `<b>✅ 3Cl₂ + 6NaOH → NaClO₃ + 5NaCl + 3H₂O (basic form)</b>`,
+        ]);
+      }
+    }
+  },
+
+  equivalent: {
+    title: 'Equivalent Concept & n-factor',
+    formulae: 'n-factor (acid/base) = no. of H⁺ or OH⁻ exchanged\nn-factor (redox) = change in oxidation number per formula unit\nNormality (N) = n × Molarity\nMilliequivalents: N₁V₁ = N₂V₂',
+    fields: [
+      {id:'species', label:'Species', placeholder:'', unit:'', type:'select', options:['H2SO4 (acid)','H3PO4 (triprotic)','NaOH','Ca(OH)2','KMnO4 (acidic)','K2Cr2O7','FeSO4','Na2S2O3']},
+      {id:'M', label:'Molarity (mol/L)', placeholder:'e.g. 0.5', unit:'mol/L'},
+    ],
+    solve(v) {
+      const nfactors={'H2SO4 (acid)':2,'H3PO4 (triprotic)':3,'NaOH':1,'Ca(OH)2':2,'KMnO4 (acidic)':5,'K2Cr2O7':6,'FeSO4':1,'Na2S2O3':1};
+      const reasons={'H2SO4 (acid)':'donates 2 H⁺','H3PO4 (triprotic)':'donates 3 H⁺','NaOH':'donates 1 OH⁻','Ca(OH)2':'donates 2 OH⁻','KMnO4 (acidic)':'Mn: +7→+2, change=5','K2Cr2O7':'Cr: +6→+3, 2 Cr × 3 = 6','FeSO4':'Fe: +2→+3, change=1','Na2S2O3':'S: +2→+4 (avg), change=2/2=1'};
+      const sp=v.species||'H2SO4 (acid)';
+      const nf=nfactors[sp]||1, M=parseFloat(v.M);
+      const st=[
+        `<b>Species: ${sp}</b>`,
+        `<b>n-factor = ${nf}</b> (${reasons[sp]||'see rule'})`,
+      ];
+      if(!isNaN(M)&&M>0) {
+        st.push(`<b>Normality N = n-factor × M = ${nf} × ${M} = <span style="color:var(--accent2)">${(nf*M).toFixed(4)} N</span></b>`);
+        st.push(`<b>Equivalent mass = Molar mass / n-factor</b>`);
+      }
+      st.push(`<b>✅ n-factor of ${sp} = ${nf}</b>`);
+      return steps(st);
+    }
+  },
+
+  hybridization_calc: {
+    title: 'Find Hybridization',
+    formulae: 'H = ½(V + M − C + A)\nV = valence electrons of central atom\nM = monovalent atoms attached\nC = cation charge, A = anion charge\nH=2→sp, H=3→sp², H=4→sp³, H=5→sp³d, H=6→sp³d²',
+    fields: [
+      {id:'V', label:'Valence electrons of central atom (V)', placeholder:'e.g. 4 for C, 5 for N', unit:''},
+      {id:'M', label:'Monovalent atoms attached (M)', placeholder:'e.g. 4 for CH₄', unit:''},
+      {id:'charge', label:'Charge of species (negative for anion)', placeholder:'e.g. 0 or +1 or -2', unit:''},
+    ],
+    solve(v) {
+      const V=parseFloat(v.V), M=parseFloat(v.M), charge=parseFloat(v.charge)||0;
+      if(isNaN(V)||isNaN(M)) return err('Enter valence electrons and number of monovalent atoms.');
+      const C=charge>0?charge:0, A=charge<0?-charge:0;
+      const H=0.5*(V+M-C+A);
+      const hybMap={2:'sp (Linear, 180°)',3:'sp² (Trigonal planar, 120°)',4:'sp³ (Tetrahedral, 109.5°)',5:'sp³d (Trigonal bipyramidal)',6:'sp³d² (Octahedral, 90°)'};
+      const Hint=Math.round(H);
+      return steps([
+        `<b>Given:</b> V=${V}, M=${M}, Charge=${charge} → C=${C}, A=${A}`,
+        `<b>Formula:</b> H = ½(V + M − C + A)`,
+        `<b>H = ½(${V} + ${M} − ${C} + ${A}) = ½(${V+M-C+A}) = ${H}</b>`,
+        `<b>Hybridization = <span style="color:var(--accent2)">${hybMap[Hint]||'sp³d³ or higher'}</span></b>`,
+        H>Hint?`<b>Note: H=${H} → the 0.5 indicates lone pair; shape is distorted from expected.</b>`:'',
+        `<b>✅ Hybridization = ${hybMap[Hint]||'higher hybridization'}</b>`,
+      ]);
+    }
+  },
+
+  formal_charge: {
+    title: 'Formal Charge',
+    formulae: 'FC = V − N − B/2\nV = valence electrons\nN = non-bonding (lone pair) electrons\nB = bonding electrons (total shared)',
+    fields: [
+      {id:'V', label:'Valence electrons of atom (V)', placeholder:'e.g. 6 for O', unit:''},
+      {id:'N', label:'Non-bonding electrons (N)', placeholder:'e.g. 4', unit:''},
+      {id:'B', label:'Bonding electrons (B)', placeholder:'e.g. 4', unit:''},
+    ],
+    solve(v) {
+      const V=parseFloat(v.V), N=parseFloat(v.N), B=parseFloat(v.B);
+      if([V,N,B].some(isNaN)) return err('Enter V, N, and B.');
+      const FC=V-N-B/2;
+      return steps([
+        `<b>Given:</b> V=${V} (valence e⁻), N=${N} (lone pair e⁻), B=${B} (bonding e⁻)`,
+        `<b>Formula:</b> FC = V − N − B/2`,
+        `<b>FC = ${V} − ${N} − ${B}/2 = ${V} − ${N} − ${B/2} = <span style="color:var(--accent2)">${FC}</span></b>`,
+        FC===0?'<b>FC = 0 → Atom has no formal charge (ideal)</b>':FC>0?'<b>FC > 0 → Atom has lost electron density (positive)</b>':'<b>FC < 0 → Atom has gained electron density (negative)</b>',
+        `<b>✅ Formal Charge = ${FC}</b>`,
+      ]);
+    }
+  },
+
+  bond_order: {
+    title: 'Bond Order — Molecular Orbital Theory',
+    formulae: 'Bond Order = (Bonding e⁻ − Antibonding e⁻) / 2\nHigher BO → stronger, shorter bond\nBO=0 → molecule does not exist',
+    fields: [
+      {id:'molecule', label:'Select molecule', placeholder:'', unit:'', type:'select', options:['H₂','He₂','Li₂','B₂','C₂','N₂','O₂','F₂','Ne₂','O₂⁺','O₂⁻','NO','CO']},
+    ],
+    solve(v) {
+      const mo={
+        'H₂':  {b:2,ab:0,note:'Exists, BO=1, diamagnetic'},
+        'He₂': {b:2,ab:2,note:'Does NOT exist (BO=0)'},
+        'Li₂': {b:4,ab:2,note:'Exists, BO=1'},
+        'B₂':  {b:6,ab:4,note:'BO=1, paramagnetic (2 unpaired in π2p)'},
+        'C₂':  {b:8,ab:4,note:'BO=2, diamagnetic'},
+        'N₂':  {b:10,ab:4,note:'BO=3, strongest bond, diamagnetic'},
+        'O₂':  {b:10,ab:6,note:'BO=2, paramagnetic (2 unpaired in π*2p)'},
+        'F₂':  {b:10,ab:8,note:'BO=1, diamagnetic'},
+        'Ne₂': {b:10,ab:10,note:'Does NOT exist (BO=0)'},
+        'O₂⁺': {b:10,ab:5,note:'BO=2.5, more stable than O₂'},
+        'O₂⁻': {b:10,ab:7,note:'BO=1.5'},
+        'NO':  {b:10,ab:5,note:'BO=2.5, paramagnetic (1 unpaired)'},
+        'CO':  {b:10,ab:4,note:'BO=3, isoelectronic with N₂'},
+      };
+      const m=v.molecule||'O₂';
+      const d=mo[m];
+      if(!d) return err('Unknown molecule.');
+      const BO=(d.b-d.ab)/2;
+      return steps([
+        `<b>Molecule: ${m}</b>`,
+        `<b>Bonding electrons = ${d.b} | Antibonding electrons = ${d.ab}</b>`,
+        `<b>Bond Order = (${d.b} − ${d.ab}) / 2 = ${(d.b-d.ab)} / 2 = <span style="color:var(--accent2)">${BO}</span></b>`,
+        `<b>Note: ${d.note}</b>`,
+        BO===0?`<b>⚠️ ${m} does NOT exist (BO=0)</b>`:`<b>✅ Bond Order of ${m} = ${BO}</b>`,
+      ]);
+    }
+  },
+
+  degree_unsaturation: {
+    title: 'Degree of Unsaturation (DBE / IHD)',
+    formulae: 'DBE = (2C + 2 + N − H − X) / 2\nC=carbons, H=hydrogens, N=nitrogens, X=halogens, O/S not counted\nDBE=1: one ring or one double bond\nDBE=2: two double bonds or one triple bond\nDBE=4: benzene ring (1 ring + 3 π bonds)',
+    fields: [
+      {id:'C', label:'Number of Carbon atoms', placeholder:'e.g. 6', unit:''},
+      {id:'H', label:'Number of Hydrogen atoms', placeholder:'e.g. 6', unit:''},
+      {id:'N', label:'Number of Nitrogen atoms', placeholder:'e.g. 0', unit:''},
+      {id:'X', label:'Number of Halogen atoms', placeholder:'e.g. 0', unit:''},
+    ],
+    solve(v) {
+      const C=parseFloat(v.C)||0, H=parseFloat(v.H)||0, N=parseFloat(v.N)||0, X=parseFloat(v.X)||0;
+      const DBE=(2*C+2+N-H-X)/2;
+      let hint='';
+      if(DBE===0) hint='Saturated compound (alkane type)';
+      else if(DBE===1) hint='One ring OR one double bond (alkene/cycloalkane)';
+      else if(DBE===2) hint='Two double bonds OR one triple bond OR one ring + one double bond';
+      else if(DBE===4) hint='Likely benzene ring (1 ring + 3 π bonds)';
+      else if(DBE===5) hint='Benzene ring + 1 more degree (e.g., toluene derivative or aldehyde)';
+      else if(DBE<0) hint='⚠️ Check formula — negative DBE is not possible.';
+      else hint='Complex unsaturated or polycyclic system';
+      return steps([
+        `<b>Given:</b> C=${C}, H=${H}, N=${N}, X=${X}`,
+        `<b>Formula:</b> DBE = (2C + 2 + N − H − X) / 2`,
+        `<b>= (2×${C} + 2 + ${N} − ${H} − ${X}) / 2`,
+        `<b>= (${2*C} + 2 + ${N} − ${H} − ${X}) / 2 = ${2*C+2+N-H-X} / 2 = <span style="color:var(--accent2)">${DBE}</span></b>`,
+        `<b>Interpretation: ${hint}</b>`,
+        `<b>✅ DBE = ${DBE}</b>`,
+      ]);
+    }
+  },
+
+  iupac_naming: {
+    title: 'IUPAC Naming — Step-by-Step Guide',
+    formulae: 'Chain: meth(1) eth(2) prop(3) but(4) pent(5) hex(6) hept(7) oct(8)\nSuffix: -ane(single) -ene(double) -yne(triple)\nPriority: COOH > CHO > OH > NH₂ > double bond > triple bond > alkyl',
+    fields: [
+      {id:'compound', label:'Select compound type', placeholder:'', unit:'', type:'select', options:['Alkane (CₙH₂ₙ₊₂)','Alkene (CₙH₂ₙ)','Alkyne (CₙH₂ₙ₋₂)','Alcohol (-OH)','Aldehyde (-CHO)','Ketone (C=O)','Carboxylic acid (-COOH)','Amine (-NH₂)','Halide (-X)']},
+      {id:'n', label:'Number of carbons in main chain', placeholder:'e.g. 3', unit:''},
+      {id:'pos', label:'Position of functional group (if needed)', placeholder:'e.g. 2', unit:''},
+    ],
+    solve(v) {
+      const n=parseInt(v.n), pos=parseInt(v.pos)||1;
+      if(isNaN(n)||n<1||n>10) return err('Enter carbon count 1–10.');
+      const prefix=['','meth','eth','prop','but','pent','hex','hept','oct','non','dec'][n];
+      const c=v.compound||'Alkane';
+      let name='', formula='', example='';
+      if(c.startsWith('Alkane')){name=`${prefix}ane`;formula=`C${n}H${2*n+2}`;example=n===3?'propane (LPG)':n===4?'butane (lighter gas)':n===1?'methane (natural gas)':'';}
+      else if(c.startsWith('Alkene')){name=n>3?`${prefix}-${pos}-ene`:`${prefix}ene`;formula=`C${n}H${2*n}`;example=n===2?'ethene (ethylene, polymer)':n===3?'propene (propylene)':'';}
+      else if(c.startsWith('Alkyne')){name=n>3?`${prefix}-${pos}-yne`:`${prefix}yne`;formula=`C${n}H${2*n-2}`;example=n===2?'ethyne (acetylene, welding)':'';}
+      else if(c.startsWith('Alcohol')){name=n>2?`${prefix}-${pos}-ol`:`${prefix}anol`;formula=`C${n}H${2*n+1}OH`;example=n===2?'ethanol (alcohol)':n===3&&pos===1?'propan-1-ol':'';}
+      else if(c.startsWith('Aldehyde')){name=`${prefix}anal`;formula=`C${n-1}H${2*n-1}CHO`;example=n===2?'ethanal (acetaldehyde)':n===1?'methanal (formaldehyde)':'';}
+      else if(c.startsWith('Ketone')){name=`${prefix}-${pos}-one`;formula=`CₙH₂ₙO`;example=n===3?'propan-2-one (acetone)':'';}
+      else if(c.startsWith('Carboxylic')){name=`${prefix}anoic acid`;formula=`C${n-1}H${2*n-1}COOH`;example=n===2?'ethanoic acid (acetic acid / vinegar)':n===1?'methanoic acid (formic acid)':'';}
+      else if(c.startsWith('Amine')){name=n>1?`${prefix}-${pos}-amine`:`${prefix}anamine`;formula=`C${n}H${2*n+3}N`;example=n===1?'methylamine':n===2?'ethanamine':'';}
+      else if(c.startsWith('Halide')){name=`${pos > 1 ? pos+'-' : ''}halo${prefix}ane`;formula=`C${n}H${2*n+1}X`;}
+      return steps([
+        `<b>Compound type: ${c} | Chain length: ${n} (${prefix}-)</b>`,
+        `<b>IUPAC Name: <span style="color:var(--accent3)">${name}</span></b>`,
+        `<b>General formula: ${formula}</b>`,
+        example?`<b>Common example: ${example}</b>`:'',
+        `<b>Naming rules applied:</b>`,
+        `★ Longest chain with principal functional group = parent chain`,
+        `★ Lowest locant to functional group`,
+        `★ Prefix: substituents in alphabetical order`,
+        `★ Suffix from functional group priority`,
+        `<b>✅ IUPAC Name = ${name}</b>`,
+      ]);
+    }
+  },
+
+  isomer_count: {
+    title: 'Count Structural Isomers',
+    formulae: 'Structural isomers: same molecular formula, different structural arrangement\nTypes: chain, position, functional group isomers\nAlkanes: C4H10=2, C5H12=3, C6H14=5, C7H16=9',
+    fields: [
+      {id:'formula', label:'Molecular formula', placeholder:'', unit:'', type:'select', options:['C4H10 (butane)','C5H12 (pentane)','C6H14 (hexane)','C4H8 (butene/cyclobutane)','C3H7Cl','C2H6O (ethanol/dimethyl ether)','C3H8O']},
+    ],
+    solve(v) {
+      const f=v.formula||'';
+      const db={
+        'C4H10 (butane)':{n:2,list:['n-butane: CH₃CH₂CH₂CH₃','isobutane (2-methylpropane): (CH₃)₂CHCH₃']},
+        'C5H12 (pentane)':{n:3,list:['n-pentane','isopentane (2-methylbutane)','neopentane (2,2-dimethylpropane)']},
+        'C6H14 (hexane)':{n:5,list:['n-hexane','2-methylpentane','3-methylpentane','2,2-dimethylbutane','2,3-dimethylbutane']},
+        'C4H8 (butene/cyclobutane)':{n:4,list:['but-1-ene','but-2-ene (cis & trans = 2 geometrical isomers)','2-methylpropene (isobutylene)','cyclobutane']},
+        'C3H7Cl':{n:4,list:['1-chloropropane','2-chloropropane','1-chloro-1-methylethane','3-chloropropane = same as 1-chloro... check: only 2: 1-chloropropane and 2-chloropropane (n=2)']},
+        'C2H6O (ethanol/dimethyl ether)':{n:2,list:['ethanol: CH₃CH₂OH (alcohol)','dimethyl ether: CH₃OCH₃ (ether) ← functional group isomers']},
+        'C3H8O':{n:3,list:['propan-1-ol: CH₃CH₂CH₂OH','propan-2-ol: CH₃CHOHCH₃','methoxyethane (methyl ethyl ether): CH₃OCH₂CH₃']},
+      };
+      const d=db[f];
+      if(!d) return err('Select a formula from the list.');
+      return steps([
+        `<b>Molecular formula: ${f.split(' ')[0]}</b>`,
+        `<b>Total structural isomers = <span style="color:var(--accent3)">${d.n}</span></b>`,
+        `<b>Structures:</b>`,
+        ...d.list.map((l,i)=>`${i+1}. ${l}`),
+        `<b>✅ ${d.n} structural isomers</b>`,
+      ]);
+    }
+  },
+
+  lattice_energy: {
+    title: 'Lattice Energy — Born-Haber Concept',
+    formulae: 'Born-Haber Cycle (Hess\'s Law applied to ionic compounds):\nΔHf = ΔH_sub + IE + ½ΔH_bond + EA + U\nU (Lattice energy) = ΔHf − ΔH_sub − IE − ½ΔH_bond − EA\nU is large & negative → more stable ionic compound',
+    fields: [
+      {id:'Hf', label:'ΔHf (Enthalpy of formation, kJ/mol)', placeholder:'e.g. −411 for NaCl', unit:'kJ/mol'},
+      {id:'Hsub', label:'ΔH_sub (Sublimation enthalpy of metal, kJ/mol)', placeholder:'e.g. 108 for Na', unit:'kJ/mol'},
+      {id:'IE', label:'IE (Ionization energy of metal, kJ/mol)', placeholder:'e.g. 496 for Na', unit:'kJ/mol'},
+      {id:'Hbond', label:'½ΔH_bond (Half bond dissociation of X₂, kJ/mol)', placeholder:'e.g. 121 for ½Cl₂', unit:'kJ/mol'},
+      {id:'EA', label:'EA (Electron affinity of non-metal, kJ/mol)', placeholder:'e.g. −349 for Cl', unit:'kJ/mol'},
+    ],
+    solve(v) {
+      const Hf=parseFloat(v.Hf), Hs=parseFloat(v.Hsub), IE=parseFloat(v.IE), Hb=parseFloat(v.Hbond), EA=parseFloat(v.EA);
+      if([Hf,Hs,IE,Hb,EA].some(isNaN)) return err('Enter all five values for Born-Haber cycle.');
+      const U=Hf-Hs-IE-Hb-EA;
+      return steps([
+        `<b>Born-Haber Cycle:</b> ΔHf = ΔH_sub + IE + ½ΔH_bond + EA + U`,
+        `<b>Solving for U (Lattice Energy):</b> U = ΔHf − ΔH_sub − IE − ½ΔH_bond − EA`,
+        `<b>U = ${Hf} − ${Hs} − ${IE} − ${Hb} − ${EA}`,
+        `<b>U = ${Hf} − (${Hs+IE+Hb+EA}) = <span style="color:var(--accent2)">${U.toFixed(2)} kJ/mol</span></b>`,
+        U<0?`<b>U is negative → energy released → lattice is stable ✅</b>`:`<b>Check values — lattice energy should be negative</b>`,
+        `<b>✅ Lattice Energy U = ${U.toFixed(2)} kJ/mol</b>`,
+      ]);
+    }
+  },
+
+  oxidation_state: {
+    title: 'Oxidation State in Compound',
+    formulae: 'Same as oxidation number rules:\nSum = 0 for neutral, sum = charge for ions\nO=−2, H=+1 (usual)\nPeroxide O=−1, Superoxide O=−½',
+    fields: [
+      {id:'element', label:'Element to find (symbol)', placeholder:'e.g. S, Cr, N, Mn', unit:''},
+      {id:'count', label:'Number of that element in formula', placeholder:'e.g. 2 for Cr in K2Cr2O7', unit:''},
+      {id:'knownSum', label:'Sum of known elements\' contributions (kJ)', placeholder:'e.g. +2 for K₂ in K2Cr2O7, −14 for 7O', unit:''},
+      {id:'charge', label:'Overall charge of species', placeholder:'e.g. 0 or −2', unit:''},
+    ],
+    solve(v) {
+      const cnt=parseFloat(v.count), known=parseFloat(v.knownSum), charge=parseFloat(v.charge)||0;
+      if(isNaN(cnt)||isNaN(known)||cnt<=0) return err('Enter element count and sum of known contributions.');
+      const x=(charge-known)/cnt;
+      return steps([
+        `<b>Given:</b> element × ${cnt}, known sum = ${known}, overall charge = ${charge}`,
+        `<b>Equation:</b> known_sum + ${cnt}x = ${charge}`,
+        `<b>${cnt}x = ${charge} − ${known} = ${charge-known}</b>`,
+        `<b>x = ${charge-known} / ${cnt} = <span style="color:var(--accent2)">${x.toFixed(2)}</span></b>`,
+        `<b>✅ Oxidation state = ${x.toFixed(2)}</b>`,
+      ]);
+    }
+  },
+};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────
+function steps(arr) {
+  return arr.filter(Boolean).map((s,i)=>`<div style="padding:0.55rem 0.8rem;margin-bottom:0.3rem;background:var(--bg3);border-left:3px solid var(--border2);border-radius:0 8px 8px 0;line-height:1.8;">${s}</div>`).join('');
+}
+function err(msg) {
+  return `<div style="padding:0.75rem 1rem;background:rgba(252,129,129,0.08);border:1px solid rgba(252,129,129,0.3);border-radius:8px;color:var(--accent4);">⚠️ ${msg}</div>`;
+}
+
+// ── SOLVER LOGIC ─────────────────────────────────────────────────────────
+function loadSolverTopic() {
+  const key=document.getElementById('solverTopic').value;
+  if(!key){alert('Please select a topic first.');return;}
+  const topic=SOLVER_TOPICS[key];
+  if(!topic) return;
+
+  document.getElementById('solverInputTitle').innerHTML=`<span style="color:var(--accent)">📐</span> ${topic.title}`;
+  document.getElementById('solverFormulae').innerHTML=`<b style="color:var(--accent2)">Formulae:</b><br>${topic.formulae.replace(/\n/g,'<br>')}`;
+
+  const fields=document.getElementById('solverFields');
+  fields.innerHTML='';
+  topic.fields.forEach(f=>{
+    const wrap=document.createElement('div');
+    wrap.style.cssText='display:flex;flex-direction:column;gap:0.3rem;';
+    const lbl=document.createElement('label');
+    lbl.textContent=f.label+(f.unit?` (${f.unit})`:'');
+    lbl.style.cssText='font-size:0.78rem;color:var(--muted);';
+    wrap.appendChild(lbl);
+    if(f.type==='select'&&f.options) {
+      const sel=document.createElement('select');
+      sel.id=`sf_${f.id}`;
+      sel.style.cssText='background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;font-family:"Space Grotesk",sans-serif;font-size:0.87rem;outline:none;cursor:pointer;';
+      f.options.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;sel.appendChild(op);});
+      wrap.appendChild(sel);
+    } else {
+      const inp=document.createElement('input');
+      inp.id=`sf_${f.id}`;
+      inp.type='text';
+      inp.placeholder=f.placeholder||'';
+      inp.style.cssText='background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;font-family:"JetBrains Mono",monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s;';
+      inp.onfocus=()=>inp.style.borderColor='var(--accent)';
+      inp.onblur=()=>inp.style.borderColor='var(--border)';
+      inp.onkeydown=e=>{if(e.key==='Enter') solveProblem();};
+      wrap.appendChild(inp);
+    }
+    fields.appendChild(wrap);
+  });
+
+  document.getElementById('solverInputs').style.display='block';
+  document.getElementById('solverOutput').style.display='none';
+}
+
+function solveProblem() {
+  const key=document.getElementById('solverTopic').value;
+  if(!key){alert('Select a topic and load it first.');return;}
+  const topic=SOLVER_TOPICS[key];
+  if(!topic) return;
+
+  const values={};
+  topic.fields.forEach(f=>{
+    const el=document.getElementById(`sf_${f.id}`);
+    if(el) values[f.id]=el.value.trim();
+  });
+
+  const result=topic.solve(values);
+  document.getElementById('solverSteps').innerHTML=result;
+  document.getElementById('solverOutput').style.display='block';
+  document.getElementById('solverOutput').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function clearSolver() {
+  document.getElementById('solverTopic').value='';
+  document.getElementById('solverInputs').style.display='none';
+  document.getElementById('solverOutput').style.display='none';
+}
+</script>
+</body>
+</html>
